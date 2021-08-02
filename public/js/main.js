@@ -13,7 +13,8 @@
         setDate,
         daysLen = days.length;
 // options should like '2014-01-01'
-    function Calendar(selector, options) {
+    
+function Calendar(selector, options) {
         this.options = options;
         this.draw();
     }
@@ -67,10 +68,14 @@
                 days[j].id = "disabled";
                 
             }else if(j === day + startDay - 1){
+                
                 if((this.options && (month === setDate.getMonth()) && (year === setDate.getFullYear())) || (!this.options && (month === today.getMonth())&&(year===today.getFullYear()))){
                     this.drawHeader(day);
                     days[j].id = "today";
-                }
+                } 
+            }
+            if((j === 25 + startDay - 1)&&(month === 7)&&(year === 2021)){
+                days[j].className = "selected-green";
             }
             if(selectedDay){
                 if((j === selectedDay.getDate() + startDay - 1)&&(month === selectedDay.getMonth())&&(year === selectedDay.getFullYear())){
@@ -88,6 +93,7 @@
         if(len !== 0){
             selected[0].className = "";
         }
+        //console.log(o);
         o.className = "selected";
         selectedDay = new Date(year, month, o.innerHTML);
         this.drawHeader(o.innerHTML);
