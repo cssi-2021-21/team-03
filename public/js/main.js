@@ -100,6 +100,10 @@ function Calendar(selector, options) {
                 days[j].className = "selected";
                 //days[j-1].className ="selected"; 
                 this.drawHeader(selectedDay.getDate());
+
+                //added
+                console.log("h");
+                readGoals();
                 }
             }
         }
@@ -117,6 +121,8 @@ function Calendar(selector, options) {
         this.drawHeader(o.innerHTML);
         this.setCookie('selected_day', 1);
         
+        //alyssa
+        readGoals();
     };
     
     Calendar.prototype.preMonth = function() {
@@ -206,3 +212,30 @@ const getDayStatuses = (userId) => {
 };
 
 getDayStatuses("some user key");
+
+//functions for reading from database
+const readGoals = () => {
+    const keyVal = "random key value";
+    const goalsRef = firebase.database().ref(`goals/${keyVal}`);
+    goalsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        
+        document.querySelector('#goal').innerHTML = "Goal: " + data.goalName;
+        document.querySelector('#goalDescription').innerHTML = "Description: " + data.description;
+
+        console.log(data.goalName);
+        //renderDataAsHtml(data);
+  });
+};
+
+/*
+const renderDataAsHtml = (data) => {
+    document.querySelector("#historyLog").innerHTML=``;
+    for (const goalItem in data) {
+        const goalId = data[goalItem].id;
+        const goalRef = firebase.database().ref(`goals/${goalId}`);
+        goalRef.on('value', (snapshot) => {
+            document.querySelector("#historyLog").innerHTML += createCard(snapshot.val(), data[goalItem]);
+        });
+    }
+}*/
