@@ -75,12 +75,11 @@ function Calendar(selector, options) {
                 } 
             }
             if((j === 25 + startDay - 1)&&(month === 7)&&(year === 2021)){
-                days[j].className = "selected";
+                days[j].className = "selected-green";
             }
             if(selectedDay){
                 if((j === selectedDay.getDate() + startDay - 1)&&(month === selectedDay.getMonth())&&(year === selectedDay.getFullYear())){
                 days[j].className = "selected";
-                console.log(selectedDay.getDate());
                 //days[j-1].className ="selected"; 
                 this.drawHeader(selectedDay.getDate());
                 }
