@@ -11,6 +11,21 @@
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
         
+
+        <!-- update the version number as needed -->
+        <script src="/__/firebase/8.8.1/firebase-app.js"></script>
+        
+        <!-- include only the Firebase features as you need -->
+        <script src="/__/firebase/8.8.1/firebase-database.js"></script>
+
+        <!-- 
+        initialize the SDK after all desired features are loaded, set useEmulator to false
+        to avoid connecting the SDK to running emulators.
+        -->
+        <script src="/__/firebase/init.js?useEmulator=true"></script>
+        <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+        <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+
     </head>
     <body>
         <section class="ftco-section">
@@ -32,9 +47,9 @@
                                         <div class="head-month"></div>
                                     </div>
                                         <div class="card-body">
-                                            <h5 class="card-title">Your Goal: Nothing</h5>
-                                            <h5 class="card-title">Status: Achieved!</h5>
-                                            <p class="card-text">Goal description.</p>
+                                            <h5 class="card-title" id="goal">Your Goal: Nothing</h5>
+                                            <h5 class="card-title" id="status">Status: Unachieved</h5>
+                                            <p class="card-text" id="goalDescription">Goal description.</p>
                                             <a href="/progress.html" class="btn btn-primary">View progress</a>
                                         </div>
                                     <div class="next-button d-flex align-items-center justify-content-center"><i class="fa fa-chevron-right"></i></div>
