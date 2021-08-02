@@ -1,3 +1,17 @@
+var firebaseConfig = {
+    apiKey: "AIzaSyBMw5A6vPa7c-H3fKGXb0eorhqPBahyKNA",
+    authDomain: "cssi-habit-tracker.firebaseapp.com",
+    databaseURL: "https://cssi-habit-tracker-default-rtdb.firebaseio.com",
+    projectId: "cssi-habit-tracker",
+    storageBucket: "cssi-habit-tracker.appspot.com",
+    messagingSenderId: "298397067456",
+    appId: "1:298397067456:web:a0cd195634ad2c74f42525"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+let greenDates = [];
+
 (function($) {
 
 	"use strict";
@@ -74,9 +88,13 @@ function Calendar(selector, options) {
                     days[j].id = "today";
                 } 
             }
-            if((j === 25 + startDay - 1)&&(month === 7)&&(year === 2021)){
-                days[j].className = "selected-green";
-            }
+            // loops through the days where goal was completed to set color to green
+            greenDates.forEach(date => {
+                if(j=== date.getDate() + startDay -1 && month === date.getMonth() && year === date.getFullYear()){
+                    days[j].className = "selected-green";
+                    console.log("selected", date)
+                }
+            })
             if(selectedDay){
                 if((j === selectedDay.getDate() + startDay - 1)&&(month === selectedDay.getMonth())&&(year === selectedDay.getFullYear())){
                 days[j].className = "selected";
@@ -173,3 +191,18 @@ function Calendar(selector, options) {
 }, false);
 
 })(jQuery);
+
+// sets var greenDates to the days where goal was completed 
+const getDayStatuses = (userId) => {
+    const goalsRef = firebase.database().ref(`users/${userId}/goals`);
+    goalsRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        dates = data["asdf"]["log"];
+        for(let i=0; i< dates.length; i++){
+            greenDates.push(new Date(dates[i]));
+        }
+    });
+    console.log("greenDates", greenDates)
+};
+
+getDayStatuses("some user key");
