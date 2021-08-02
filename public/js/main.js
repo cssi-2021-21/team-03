@@ -24,13 +24,13 @@ function Calendar(selector, options) {
         this.getOptions();
         this.drawDays();
         var that = this,
-            reset = document.getElementById('reset'),
+            //reset = document.getElementById('reset'),
             pre = document.getElementsByClassName('pre-button'),
             next = document.getElementsByClassName('next-button');
             
             pre[0].addEventListener('click', function(){that.preMonth(); });
             next[0].addEventListener('click', function(){that.nextMonth(); });
-            reset.addEventListener('click', function(){that.reset(); });
+            //reset.addEventListener('click', function(){that.reset(); });
         while(daysLen--) {
             days[daysLen].addEventListener('click', function(){that.clickDay(this); });
         }
