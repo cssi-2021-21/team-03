@@ -163,7 +163,6 @@
         }
     };
     var calendar = new Calendar();
-    
         
 }, false);
 
