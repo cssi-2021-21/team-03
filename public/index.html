@@ -7,6 +7,7 @@
         <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
         <!--<link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />-->
         <link rel="stylesheet" type="text/css" href="css/style.css">
+        <link rel="stylesheet" type="text/css" href="css/checkbox.css">
         <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
 
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -25,7 +26,9 @@
         <script src="/__/firebase/init.js?useEmulator=true"></script>
         <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
         <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
-
+        
+        
+                                            
     </head>
     <body>
         <section class="ftco-section">
@@ -49,6 +52,19 @@
                                         <div class="card-body">
                                             <h5 class="card-title" id="goal">Your Goal: Nothing</h5>
                                             <h5 class="card-title" id="status">Status: Unachieved</h5>
+                                       
+                                            
+   <div class="checkbox">
+    <form>
+      <div>
+        <input type="checkbox" id="check" name="check" value="" />
+        <label for="check">
+          <span><!-- This span is needed to create the "checkbox" element --></span>ACHIEVED
+        </label>
+      </div>
+    </form>
+</div>
+
                                             <p class="card-text" id="goalDescription">Goal description.</p>
                                             <a href="/progress.html" class="btn btn-primary">View progress</a>
                                         </div>
