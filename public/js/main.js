@@ -169,7 +169,6 @@ function Calendar(selector, options) {
         }
     };
     var calendar = new Calendar();
-    
         
 }, false);
 

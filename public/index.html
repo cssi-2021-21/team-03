@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Habit Tracker</title>
         <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
-        <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
+        <!--<link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />-->
         <link rel="stylesheet" type="text/css" href="css/style.css">
         <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
 
@@ -24,16 +24,21 @@
                     <div class="col-md-12">
                         <div class="elegant-calencar d-md-flex">
                             <div class="wrap-header d-flex align-items-center">
-                          <p id="reset">reset</p>
-                        <div id="header" class="p-0">
-                        <div class="pre-button d-flex align-items-center justify-content-center"><i class="fa fa-chevron-left"></i></div>
-                        <div class="head-info">
-                            <div class="head-day"></div>
-                            <div class="head-month"></div>
+                                <!--<p id="reset">reset</p>-->
+                                <div id="header" class="p-0">
+                                    <!--<div class="pre-button d-flex align-items-center justify-content-center"><i class="fa fa-chevron-left"></i></div>
+                                    --><div class="head-info card-title">
+                                        <div class="head-day"></div>
+                                        <div class="head-month"></div>
+                                    </div>
+                                        <div class="card-body">
+                                            <h5 class="card-title">Your Goal:</h5>
+                                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                                        </div>
+                                    <div class="next-button d-flex align-items-center justify-content-center"><i class="fa fa-chevron-right"></i></div>
+                                </div>
                         </div>
-                        <div class="next-button d-flex align-items-center justify-content-center"><i class="fa fa-chevron-right"></i></div>
-                        </div>
-                      </div>
                       <div class="calendar-wrap">
                         <table id="calendar">
                         <thead>

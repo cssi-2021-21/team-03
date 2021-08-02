@@ -8226,12 +8226,14 @@ h1, h2, h3, h4, h5,
 .head-day {
   font-size: 8em;
   line-height: 1;
-  color: #fff; }
+  color: #fff;
+  /*color: var(--blue);*/ }
 
 .head-month {
   font-size: 2em;
   line-height: 1;
   color: #fff;
+  /*color: var(--blue);*/
   font-size: 18px;
   text-transform: uppercase; }
 
