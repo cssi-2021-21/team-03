@@ -8286,11 +8286,16 @@ tbody td {
         -o-transition: none;
         transition: none; } }
 
-tbody td:hover, .selected {
+tbody td:hover, .selected, .selected-green {
   color: #fff;
   border: none; }
-  tbody td:hover:after, .selected:after {
-    background: #2a3246; }
+  
+.selected-green:after{
+  background: #28a745;
+}
+
+tbody td:hover:after, .selected:after{
+  background: #2a3246; }
 
 tbody td:active {
   -webkit-transform: scale(0.7);
