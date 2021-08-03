@@ -71,6 +71,8 @@ function Calendar(selector, options) {
         }
      };
     
+    
+    
     Calendar.prototype.drawDays = function() {
         var startDay = new Date(year, month, 1).getDay(),
 //      how many days are in this month
@@ -218,12 +220,15 @@ const getDayStatuses = (userId) => {
     const goalsRef = firebase.database().ref(`users/${userId}/goals`);
     goalsRef.on('value', (snapshot) => {
         const data = snapshot.val();
+        console.log(data)
         dates = data[goal]["log"];
-        for(let i=0; i< dates.length; i++){
-            greenDates.push(new Date(dates[i]));
+        for(const key in dates){
+            date = new Date(data[goal]['log'][key].time)
+            greenDates.push(date);
         }
     });
-    console.log("greenDates", greenDates);
+    Calendar.prototype.drawDays()
+    
 };
 
 getDayStatuses("some user key");
