@@ -65,6 +65,7 @@ function Calendar(selector, options) {
         checkbox.checked = false;
         for (let date in greenDates) {
             if (date === headDay[0].innerHTML) {
+                console.log("date", date, "headDay", headDay[0])
                 checkbox.checked = true;
             }
         }
@@ -260,6 +261,6 @@ const checkboxClicked = () => {
     let goal = 'asdf';
 
     if (checkbox.checked === true) {
-        firebase.database().ref(`users/${userKey}/goals/${goal}/log`).push({'numerical key': ms});
+        firebase.database().ref(`users/${userKey}/goals/${goal}/log`).push({'milliseconds': ms});
     }
 }
