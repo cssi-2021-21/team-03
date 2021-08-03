@@ -57,9 +57,17 @@ function Calendar(selector, options) {
     Calendar.prototype.drawHeader = function(e) {
         var headDay = document.getElementsByClassName('head-day'),
             headMonth = document.getElementsByClassName('head-month');
+        let checkbox = document.querySelector("#check");
 
-            e?headDay[0].innerHTML = e : headDay[0].innerHTML = day;
-            headMonth[0].innerHTML = monthTag[month] +" - " + year;        
+        e?headDay[0].innerHTML = e : headDay[0].innerHTML = day;
+        headMonth[0].innerHTML = monthTag[month] +" - " + year;
+
+        checkbox.checked = false;
+        for (let date in greenDates) {
+            if (date === headDay[0].innerHTML) {
+                checkbox.checked = true;
+            }
+        }
      };
     
     Calendar.prototype.drawDays = function() {
@@ -105,9 +113,11 @@ function Calendar(selector, options) {
                 //days[j-1].className ="selected"; 
                 this.drawHeader(selectedDay.getDate());
 
-                //added
-                console.log("h");
-                readGoals();
+                //readGoals();
+
+                for(day in days) {
+                    console.log(day);
+                }
                 }
             }
         }
@@ -125,8 +135,7 @@ function Calendar(selector, options) {
         this.drawHeader(o.innerHTML);
         this.setCookie('selected_day', 1);
         
-        //alyssa
-        readGoals();
+        //readGoals();
     };
     
     Calendar.prototype.preMonth = function() {
@@ -212,7 +221,7 @@ const getDayStatuses = (userId) => {
             greenDates.push(new Date(dates[i]));
         }
     });
-    console.log("greenDates", greenDates)
+    console.log("greenDates", greenDates);
 };
 
 getDayStatuses("some user key");

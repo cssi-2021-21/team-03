@@ -23,7 +23,7 @@ const createCard = (goalDetails, userDetails) => {
     <div class="column is-one-quarter">
       <div class="card">
         <header class="card-header">
-            <p class="card-header-title">${goalDetails.goalName}</p>
+            <motion.p class="card-header-title">${goalDetails.goalName}</motion.p>
         </header>
         <div class="card-content">
           <div class="content">${goalDetails.description}</div>
