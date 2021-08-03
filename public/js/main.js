@@ -83,9 +83,11 @@ function Calendar(selector, options) {
                 //days[j-1].className ="selected"; 
                 this.drawHeader(selectedDay.getDate());
 
-                //added
-                console.log("h");
                 readGoals();
+
+                for(day in days) {
+                    console.log(day);
+                }
                 }
             }
         }
