@@ -61,6 +61,8 @@ function Calendar(selector, options) {
 
         e?headDay[0].innerHTML = e : headDay[0].innerHTML = day;
         headMonth[0].innerHTML = monthTag[month] +" - " + year;
+        
+        readGoals();
 
         checkbox.checked = false;
         for (let date in greenDates) {
@@ -113,8 +115,6 @@ function Calendar(selector, options) {
                 //days[j-1].className ="selected"; 
                 this.drawHeader(selectedDay.getDate());
 
-                //readGoals();
-
                 for(day in days) {
                     console.log(day);
                 }
@@ -134,8 +134,6 @@ function Calendar(selector, options) {
         selectedDay = new Date(year, month, o.innerHTML);
         this.drawHeader(o.innerHTML);
         this.setCookie('selected_day', 1);
-        
-        //readGoals();
     };
     
     Calendar.prototype.preMonth = function() {
@@ -229,7 +227,7 @@ getDayStatuses("some user key");
 
 //functions for reading from database
 const readGoals = () => {
-    const keyVal = "random key value";
+    const keyVal = 'goalkey1';
     const goalsRef = firebase.database().ref(`goals/${keyVal}`);
     goalsRef.on('value', (snapshot) => {
         const data = snapshot.val();
@@ -238,7 +236,6 @@ const readGoals = () => {
         document.querySelector('#goalDescription').innerHTML = "Description: " + data.description;
 
         console.log(data.goalName);
-        //renderDataAsHtml(data);
   });
 };
 
