@@ -1,19 +1,23 @@
-var firebaseConfig = {
-    apiKey: "AIzaSyBMw5A6vPa7c-H3fKGXb0eorhqPBahyKNA",
-    authDomain: "cssi-habit-tracker.firebaseapp.com",
-    databaseURL: "https://cssi-habit-tracker-default-rtdb.firebaseio.com",
-    projectId: "cssi-habit-tracker",
-    storageBucket: "cssi-habit-tracker.appspot.com",
-    messagingSenderId: "298397067456",
-    appId: "1:298397067456:web:a0cd195634ad2c74f42525"
+console.log("main")
+window.onload = (event) => {
+    console.log("onload")
+    // Use this to retain user state between html pages.
+    firebase.auth().onAuthStateChanged(function (user) {
+        console.log("check state")
+        if (user) {
+            console.log('Logged in as: ' + user.displayName);
+            googleUserId = user.uid;
+        } else {
+            console.log("not logged in")
+            // If not logged in, navigate back to login page.
+            window.location = 'signIn.html';
+        };
+    });
   };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
 
 let greenDates = [];
 
 (function($) {
-
 	"use strict";
 
 	document.addEventListener('DOMContentLoaded', function(){
@@ -239,3 +243,5 @@ const renderDataAsHtml = (data) => {
         });
     }
 }*/
+
+
