@@ -65,12 +65,20 @@ function Calendar(selector, options) {
         readGoals();
 
         checkbox.checked = false;
-        for (let date in greenDates) {
-            if (date === headDay[0].innerHTML) {
+        for (const date in greenDates) {
+            console.log(greenDates[date])
+            console.log(selectedDay)
+            console.log(greenDates[date].toString() === selectedDay.toString())
+            if (greenDates[date].toString() === selectedDay.toString()) {
+                console.log("box should be checked")
                 checkbox.checked = true;
+                break;
+                
             }
         }
      };
+    
+    
     
     Calendar.prototype.drawDays = function() {
         var startDay = new Date(year, month, 1).getDay(),
@@ -105,19 +113,23 @@ function Calendar(selector, options) {
             // loops through the days where goal was completed to set color to green
             greenDates.forEach(date => {
                 if(j=== date.getDate() + startDay -1 && month === date.getMonth() && year === date.getFullYear()){
+                    console.log(greenDates)
                     days[j].className = "selected-green";
                     console.log("selected", date)
                 }
             })
             if(selectedDay){
                 if((j === selectedDay.getDate() + startDay - 1)&&(month === selectedDay.getMonth())&&(year === selectedDay.getFullYear())){
-                days[j].className = "selected";
-                //days[j-1].className ="selected"; 
-                this.drawHeader(selectedDay.getDate());
+                    days[j].className = "selected";
+                    //days[j-1].className ="selected"; 
+                        
+                    this.drawHeader(selectedDay.getDate());
 
-                for(day in days) {
-                    console.log(day);
-                }
+                    /*
+                    for(day in days) {
+                        console.log(day);
+                    }
+                    */
                 }
             }
         }
@@ -131,7 +143,13 @@ function Calendar(selector, options) {
         }
         //console.log(o);
         o.className = "selected";
+
         selectedDay = new Date(year, month, o.innerHTML);
+        console.log("selectedDay", selectedDay)
+        if(selectedDay in greenDates){
+            console.log("selectedDay in greenDates", selectedDay in greenDates)
+            checkbox.checked = true;
+        }
         this.drawHeader(o.innerHTML);
         this.setCookie('selected_day', 1);
     };
@@ -215,12 +233,15 @@ const getDayStatuses = (userId) => {
     const goalsRef = firebase.database().ref(`users/${userId}/goals`);
     goalsRef.on('value', (snapshot) => {
         const data = snapshot.val();
+        console.log(data)
         dates = data[goal]["log"];
-        for(let i=0; i< dates.length; i++){
-            greenDates.push(new Date(dates[i]));
+        for(const key in dates){
+            date = new Date(data[goal]['log'][key].milliseconds)
+            greenDates.push(date);
         }
+        console.log(greenDates)
     });
-    console.log("greenDates", greenDates);
+    
 };
 
 getDayStatuses("some user key");
@@ -257,6 +278,6 @@ const checkboxClicked = () => {
     let goal = 'asdf';
 
     if (checkbox.checked === true) {
-        firebase.database().ref(`users/${userKey}/goals/${goal}/log`).push({'numerical key': ms});
+        firebase.database().ref(`users/${userKey}/goals/${goal}/log`).push({'milliseconds': ms});
     }
 }
