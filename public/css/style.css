@@ -8297,7 +8297,9 @@ tbody td:hover, .selected, .selected-green {
 }
 
 tbody td:hover:after, .selected:after{
-  background: #2a3246; }
+  background: #2a3246; 
+  text-decoration: burlywood;
+}
 
 tbody td:active {
   -webkit-transform: scale(0.7);

@@ -63,12 +63,20 @@ function Calendar(selector, options) {
         headMonth[0].innerHTML = monthTag[month] +" - " + year;
 
         checkbox.checked = false;
-        for (let date in greenDates) {
-            if (date === headDay[0].innerHTML) {
+        for (const date in greenDates) {
+            console.log(greenDates[date])
+            console.log(selectedDay)
+            console.log(greenDates[date].toString() === selectedDay.toString())
+            if (greenDates[date].toString() === selectedDay.toString()) {
+                console.log("box should be checked")
                 checkbox.checked = true;
+                break;
+                
             }
         }
      };
+    
+    
     
     Calendar.prototype.drawDays = function() {
         var startDay = new Date(year, month, 1).getDay(),
@@ -103,6 +111,7 @@ function Calendar(selector, options) {
             // loops through the days where goal was completed to set color to green
             greenDates.forEach(date => {
                 if(j=== date.getDate() + startDay -1 && month === date.getMonth() && year === date.getFullYear()){
+                    console.log(greenDates)
                     days[j].className = "selected-green";
                     console.log("selected", date)
                 }
@@ -111,13 +120,15 @@ function Calendar(selector, options) {
                 if((j === selectedDay.getDate() + startDay - 1)&&(month === selectedDay.getMonth())&&(year === selectedDay.getFullYear())){
                 days[j].className = "selected";
                 //days[j-1].className ="selected"; 
+                    
                 this.drawHeader(selectedDay.getDate());
+
 
                 //readGoals();
 
-                for(day in days) {
-                    console.log(day);
-                }
+                // for(day in days) {
+                //     console.log(day);
+                // }
                 }
             }
         }
@@ -131,7 +142,13 @@ function Calendar(selector, options) {
         }
         //console.log(o);
         o.className = "selected";
+
         selectedDay = new Date(year, month, o.innerHTML);
+        console.log("selectedDay", selectedDay)
+        if(selectedDay in greenDates){
+            console.log("selectedDay in greenDates", selectedDay in greenDates)
+            checkbox.checked = true;
+        }
         this.drawHeader(o.innerHTML);
         this.setCookie('selected_day', 1);
         
@@ -211,17 +228,21 @@ function Calendar(selector, options) {
 
 })(jQuery);
 
+let goal = "asdf"
 // sets var greenDates to the days where goal was completed 
 const getDayStatuses = (userId) => {
     const goalsRef = firebase.database().ref(`users/${userId}/goals`);
     goalsRef.on('value', (snapshot) => {
         const data = snapshot.val();
-        dates = data["asdf"]["log"];
-        for(let i=0; i< dates.length; i++){
-            greenDates.push(new Date(dates[i]));
+        console.log(data)
+        dates = data[goal]["log"];
+        for(const key in dates){
+            date = new Date(data[goal]['log'][key].milliseconds)
+            greenDates.push(date);
         }
+        console.log(greenDates)
     });
-    console.log("greenDates", greenDates);
+    
 };
 
 getDayStatuses("some user key");
@@ -241,16 +262,24 @@ const readGoals = () => {
   });
 };
 
-/*
-const renderDataAsHtml = (data) => {
-    document.querySelector("#historyLog").innerHTML=``;
-    for (const goalItem in data) {
-        const goalId = data[goalItem].id;
-        const goalRef = firebase.database().ref(`goals/${goalId}`);
-        goalRef.on('value', (snapshot) => {
-            document.querySelector("#historyLog").innerHTML += createCard(snapshot.val(), data[goalItem]);
-        });
+const checkboxClicked = () => {
+    let checkbox = document.querySelector('#check');
+    let headDay = document.getElementsByClassName('head-day'),
+        headMonth = document.getElementsByClassName('head-month');
+
+    let dateStr = headMonth[0].innerHTML;
+    let monthStr = dateStr.substring(0, dateStr.indexOf('-'));
+    let yearStr = dateStr.substring(dateStr.lastIndexOf(' '));
+
+    let time = new Date(monthStr + headDay[0].innerHTML + ',' + yearStr);
+    console.log(time);
+    let ms = Date.parse(time);
+    console.log(ms);
+
+    let userKey = 'some user key';
+    let goal = 'asdf';
+
+    if (checkbox.checked === true) {
+        firebase.database().ref(`users/${userKey}/goals/${goal}/log`).push({'milliseconds': ms});
     }
-}*/
-
-
+}
