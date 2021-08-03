@@ -211,12 +211,13 @@ function Calendar(selector, options) {
 
 })(jQuery);
 
+let goal = "asdf"
 // sets var greenDates to the days where goal was completed 
 const getDayStatuses = (userId) => {
     const goalsRef = firebase.database().ref(`users/${userId}/goals`);
     goalsRef.on('value', (snapshot) => {
         const data = snapshot.val();
-        dates = data["asdf"]["log"];
+        dates = data[goal]["log"];
         for(let i=0; i< dates.length; i++){
             greenDates.push(new Date(dates[i]));
         }
