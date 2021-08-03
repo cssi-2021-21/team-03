@@ -12,19 +12,47 @@ const getGoals = (userId) => {
   });
 };
 
-const renderDataAsHtml = (data) => {
+const renderDataAsHtml = (goalsData) => {
     document.querySelector("#historyLog").innerHTML=``;
-    for (const goalItem in data) {
-        const goalId = data[goalItem].id;
+    for (const goalItem in goalsData) {
+        const goalId = goalsData[goalItem].id;
         const goalRef = firebase.database().ref(`goals/${goalId}`);
         goalRef.on('value', (snapshot) => {
             document.querySelector("#historyLog").insertAdjacentHTML("beforeend", `<div id=${goalId}></div>`);
-            ReactDOM.render(createCard(snapshot.val(), data[goalItem]), document.querySelector(`#${goalId}`));
+            ReactDOM.render(createCard(snapshot.val(), goalsData[goalItem]), document.querySelector(`#${goalId}`));
+
+            const labels = [
+                'July',
+                'August',
+                'September',
+                'October',
+                'November',
+                'December'
+            ];
+            const chartData = {
+                labels: labels,
+                datasets: [{
+                    label: 'Your Progress',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [0, 10, 5, 2, 20, 30, 45], // TODO: edit to reflect user data
+                }]
+            };
+            const config = {
+                type: 'line',
+                data: chartData,
+                options: {}
+            };
+
+            const chart = new Chart(document.querySelector("#chart"+goalId).getContext("2d"), config);
+            console.log("rendering", chart);
+            console.log("with config", config);
         });
     }
 }
 
-const createCard = (goalDetails, userDetails) => {    
+const createCard = (goalDetails, userDetails) => {
+    const chartId = "chart"+userDetails.id;
   return (
     <div class="columns is-centered is-variable is-5">
     <motion.div class="column is-one-quarter"
@@ -36,10 +64,6 @@ const createCard = (goalDetails, userDetails) => {
         <div class="card-content">
           <div class="content">{goalDetails.description}</div>
         </div>
-        <footer class="card-footer">
-            <p class="card-content">Best Streak: {userDetails.bestStreak}</p>
-            <a href="#" class="card-footer-item">placeholder</a>
-        </footer>
       </div>
     </motion.div>
     <motion.div class="column is-one-quarter"
@@ -49,11 +73,15 @@ const createCard = (goalDetails, userDetails) => {
           <p class="card-header-title"></p>
         </header>
         <div class="card-content">
-          <div class="content">second column for whatever</div>
+          <div class="content">
+              <div><canvas id={chartId}></canvas></div>
+              <p>You've been accomplishing {goalDetails.goalName} more and more often over the past few months! Good job!</p>
+          </div>
+          <p>Best Streak: {userDetails.bestStreak}</p>
+          <p>Current Streak: {userDetails.currentStreak}</p>
         </div>
         <footer class="card-footer">
-            <p class="card-content">Current Streak: </p>
-            <a href="#" class="card-footer-item">placeholder</a>
+            <a href="#" class="card-footer-item">Delete goal</a>
         </footer>
       </div>
     </motion.div>
@@ -104,7 +132,7 @@ ReactDOM.render(<a href="index.html">
                 initial="hidden"
                 animate="visible"
                 variants={svgVariants}
-                width="120" height="100" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                width="64" height="50" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
                 <motion.path variants={pathVariants} id="tasks-icon" d={checkDoubleSVG}/>
             </motion.svg>
     </motion.div>
