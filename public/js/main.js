@@ -63,10 +63,15 @@ function Calendar(selector, options) {
         headMonth[0].innerHTML = monthTag[month] +" - " + year;
 
         checkbox.checked = false;
-        for (let date in greenDates) {
-            if (date === headDay[0].innerHTML) {
-                console.log("date", date, "headDay", headDay[0])
+        for (const date in greenDates) {
+            console.log(greenDates[date])
+            console.log(selectedDay)
+            console.log(greenDates[date].toString() === selectedDay.toString())
+            if (greenDates[date].toString() === selectedDay.toString()) {
+                console.log("box should be checked")
                 checkbox.checked = true;
+                break;
+                
             }
         }
      };
@@ -106,6 +111,7 @@ function Calendar(selector, options) {
             // loops through the days where goal was completed to set color to green
             greenDates.forEach(date => {
                 if(j=== date.getDate() + startDay -1 && month === date.getMonth() && year === date.getFullYear()){
+                    console.log(greenDates)
                     days[j].className = "selected-green";
                     console.log("selected", date)
                 }
@@ -114,13 +120,15 @@ function Calendar(selector, options) {
                 if((j === selectedDay.getDate() + startDay - 1)&&(month === selectedDay.getMonth())&&(year === selectedDay.getFullYear())){
                 days[j].className = "selected";
                 //days[j-1].className ="selected"; 
+                    
                 this.drawHeader(selectedDay.getDate());
+
 
                 //readGoals();
 
-                for(day in days) {
-                    console.log(day);
-                }
+                // for(day in days) {
+                //     console.log(day);
+                // }
                 }
             }
         }
@@ -134,7 +142,13 @@ function Calendar(selector, options) {
         }
         //console.log(o);
         o.className = "selected";
+
         selectedDay = new Date(year, month, o.innerHTML);
+        console.log("selectedDay", selectedDay)
+        if(selectedDay in greenDates){
+            console.log("selectedDay in greenDates", selectedDay in greenDates)
+            checkbox.checked = true;
+        }
         this.drawHeader(o.innerHTML);
         this.setCookie('selected_day', 1);
         
@@ -223,11 +237,11 @@ const getDayStatuses = (userId) => {
         console.log(data)
         dates = data[goal]["log"];
         for(const key in dates){
-            date = new Date(data[goal]['log'][key].time)
+            date = new Date(data[goal]['log'][key].milliseconds)
             greenDates.push(date);
         }
+        console.log(greenDates)
     });
-    Calendar.prototype.drawDays()
     
 };
 
