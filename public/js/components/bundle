@@ -40111,9 +40111,13 @@ const createCard = (goalDetails, userDetails) => {
     id: chartId
   })), /*#__PURE__*/React.createElement("p", null, "You've been accomplishing ", goalDetails.goalName, " more and more often over the past few months! Good job!")), /*#__PURE__*/React.createElement("p", null, "Best Streak: ", userDetails.bestStreak), /*#__PURE__*/React.createElement("p", null, "Current Streak: ", userDetails.currentStreak)), /*#__PURE__*/React.createElement("footer", {
     class: "card-footer"
-  }, /*#__PURE__*/React.createElement("a", {
-    href: "#",
-    class: "card-footer-item"
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: () => {
+      deleteGoal("some user key", userDetails.id);
+    }
+    /*TODO: replace "some user key"*/
+    ,
+    class: "card-footer-item button"
   }, "Delete goal")))));
 }; // Helper functions for creating new goal
 
@@ -40124,7 +40128,7 @@ const addGoal = async (userId, newGoal) => {
 
   if (!goalId) {
     goalId = firebase.database().ref(`goals`).push(newGoal).getKey();
-  } // wip
+  } // add goal to user
 
 
   const userGoal = {
@@ -40135,7 +40139,6 @@ const addGoal = async (userId, newGoal) => {
     log: []
   };
   firebase.database().ref(`users/${userId}/goals`).push(userGoal);
-  console.log(goalId);
 };
 
 const searchGoalsByName = async goalName => {
@@ -40150,6 +40153,23 @@ const searchGoalsByName = async goalName => {
   }
 
   return 0;
+}; // Helper functions for deleting goal
+
+
+const deleteGoal = async (userId, goalId) => {
+  console.log("deleting", goalId);
+  const snapshot = await firebase.database().ref(`users/${userId}/goals`).once('value');
+  console.log("got snapshot");
+  const goals = snapshot.val();
+  console.log("with val", goals);
+
+  for (const goal in goals) {
+    if (goals[goal].id == goalId) {
+      console.log("match!");
+      firebase.database().ref(`users/${userId}/goals/${goal}`).remove();
+      return;
+    }
+  }
 }; // Info for home icon
 
 
@@ -40267,7 +40287,7 @@ document.querySelector("#createGoalButton").addEventListener("click", () => {
   };
   nameInput.value = "";
   descriptionInput.value = "";
-  addGoal("some user key", newGoal);
+  addGoal("some user key", newGoal); // TODO: replace "some user key"
 });
 
 },{"framer-motion":3,"react":13,"react-dom":10}],23:[function(require,module,exports){
