@@ -279,5 +279,15 @@ const checkboxClicked = () => {
 
     if (checkbox.checked === true) {
         firebase.database().ref(`users/${userKey}/goals/${goal}/log`).push({'milliseconds': ms});
+    }/*
+    else {
+        if ()
+        let arr = firebase.database().ref(`users/${userKey}/goals/${goal}/log/milliseconds`);
+        for (times in arr) {
+            if (times === ms) {
+                firebase.database().ref(`users/${userKey}/goals/${goal}/log`).push({'milliseconds': ms});
+            }
+        }
     }
+    this.drawDays();*/
 }
