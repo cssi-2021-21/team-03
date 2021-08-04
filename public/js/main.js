@@ -280,3 +280,20 @@ const checkboxClicked = () => {
         firebase.database().ref(`users/${userKey}/goals/${goal}/log`).push({'milliseconds': ms});
     }
 }
+
+const setGoals = () => {
+    let userKey = "some user key"
+    let goal = document.querySelector("#goalToSet").value;
+    let description = document.querySelector("#goalDescription").value;
+    console.log(goal, description)
+    firebase.database().ref(`users/${userKey}/goals`).push({
+        "goalName": goal,
+        "description":description,
+        "bestStreak": 0,
+        "currentStreak": 1,
+        "doneToday":false,
+        "log": [],
+    })
+
+
+}
