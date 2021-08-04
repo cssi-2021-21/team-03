@@ -66,9 +66,7 @@ function Calendar(selector, options) {
 
         checkbox.checked = false;
         for (const date in greenDates) {
-            console.log(greenDates[date])
-            console.log(selectedDay)
-            console.log(greenDates[date].toString() === selectedDay.toString())
+            //console.log(greenDates[date].toString() === selectedDay.toString())
             if (greenDates[date].toString() === selectedDay.toString()) {
                 console.log("box should be checked")
                 checkbox.checked = true;
@@ -114,13 +112,13 @@ function Calendar(selector, options) {
             greenDates.forEach(date => {
                 if(j=== date.getDate() + startDay -1 && month === date.getMonth() && year === date.getFullYear()){
                     console.log(greenDates)
-                    days[j].className = "selected-green";
-                    console.log("selected", date)
+                    days[j].classList.add("selected-green");
+                    //console.log("selected", date)
                 }
             })
             if(selectedDay){
                 if((j === selectedDay.getDate() + startDay - 1)&&(month === selectedDay.getMonth())&&(year === selectedDay.getFullYear())){
-                    days[j].className = "selected";
+                    days[j].classList.add("selected");
                     //days[j-1].className ="selected"; 
                         
                     this.drawHeader(selectedDay.getDate());
@@ -138,18 +136,16 @@ function Calendar(selector, options) {
     Calendar.prototype.clickDay = function(o) {
         var selected = document.getElementsByClassName("selected"),
             len = selected.length;
+        console.log("to be stripped of class", selected)
         if(len !== 0){
-            selected[0].className = "";
+            console.log("look at classes", selected[0].classList)
+            selected[0].classList.remove("selected");
         }
         //console.log(o);
-        o.className = "selected";
+        o.classList.add("selected");
 
         selectedDay = new Date(year, month, o.innerHTML);
-        console.log("selectedDay", selectedDay)
-        if(selectedDay in greenDates){
-            console.log("selectedDay in greenDates", selectedDay in greenDates)
-            checkbox.checked = true;
-        }
+
         this.drawHeader(o.innerHTML);
         this.setCookie('selected_day', 1);
     };
