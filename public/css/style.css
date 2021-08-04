@@ -8293,12 +8293,12 @@ tbody td:hover, .selected, .selected-green {
   border: none; }
   
 .selected-green:after{
-  background: #28a745;
+  background: #39cb75;
 }
 
 tbody td:hover:after, .selected:after{
   background: #2a3246; 
-  text-decoration: burlywood;
+
 }
 
 tbody td:active {
@@ -8309,7 +8309,7 @@ tbody td:active {
 #today {
   color: #fff; }
   #today:after {
-    background: #39cb75; }
+    background: #5bc5d3; }
 
 #disabled {
   cursor: default;
