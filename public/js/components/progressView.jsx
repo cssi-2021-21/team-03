@@ -20,14 +20,26 @@ const renderDataAsHtml = (goalsData) => {
         goalRef.on('value', (snapshot) => {
             document.querySelector("#historyLog").insertAdjacentHTML("beforeend", `<div id=${goalId}></div>`);
             ReactDOM.render(createCard(snapshot.val(), goalsData[goalItem]), document.querySelector(`#${goalId}`));
+            
+            // placeholder numbers for March-July for demo purposes, only August updates
+            // used bestStreak to add variation to placeholder numbers....
+            let data = [0, 1, 6+goalsData[goalItem].bestStreak, 0+goalsData[goalItem].bestStreak, 2, 0];
+            
+            const log = goalsData[goalItem].log;
+            for(const time in log) {
+                const date = new Date(log[time].milliseconds);
+                if(date.getMonth()-2 < data.length) {
+                    data[date.getMonth()-2]++;
+                }
+            }
 
             const labels = [
+                'March',
+                'April',
+                'May',
+                'June',
                 'July',
-                'August',
-                'September',
-                'October',
-                'November',
-                'December'
+                'August'
             ];
             const chartData = {
                 labels: labels,
@@ -35,7 +47,7 @@ const renderDataAsHtml = (goalsData) => {
                     label: 'Your Progress',
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
-                    data: [0, 10, 5, 2, 20, 30, 45], // TODO: edit to reflect user data
+                    data: data, // TODO: edit to reflect user data
                 }]
             };
             const config = {
