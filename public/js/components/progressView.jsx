@@ -271,8 +271,8 @@ window.onload = (event) => {
     if (user) {
       console.log('Logged in as: ' + user.displayName);
       let googleUserId = user.uid;
-      renderPage("some user key");
-      //renderPage(googleUserId);
+      //renderPage("some user key");
+      renderPage(googleUserId);
     } else {
       // If not logged in, navigate back to login page.
       window.location = 'index.html';

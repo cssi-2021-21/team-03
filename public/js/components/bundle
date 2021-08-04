@@ -40342,8 +40342,9 @@ window.onload = event => {
   firebase.auth().onAuthStateChanged(function (user) {
     if (user) {
       console.log('Logged in as: ' + user.displayName);
-      let googleUserId = user.uid;
-      renderPage("some user key"); //renderPage(googleUserId);
+      let googleUserId = user.uid; //renderPage("some user key");
+
+      renderPage(googleUserId);
     } else {
       // If not logged in, navigate back to login page.
       window.location = 'index.html';

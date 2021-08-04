@@ -1,4 +1,7 @@
 console.log("main")
+let googleUserId; // originally "some user key", initialized in window.onload as uid of user
+let goal; // originally "asdf", initialized in window.onload with initGoal() as key of user's first goal
+
 window.onload = (event) => {
     console.log("onload")
     // Use this to retain user state between html pages.
@@ -7,6 +10,8 @@ window.onload = (event) => {
         if (user) {
             console.log('Logged in as: ' + user.displayName);
             googleUserId = user.uid;
+            //googleUserId = "some user key";
+            initGoal();
         } else {
             console.log("not logged in")
             // If not logged in, navigate back to login page.
@@ -14,6 +19,18 @@ window.onload = (event) => {
         };
     });
   };
+
+// Set goal to key of user's first goal
+// TODO: set goal to "current goal" after we add ability to select goals
+const initGoal = async () => {
+    const snapshot = await firebase.database().ref(`users/${googleUserId}/goals/`).once('value');
+    const goals = snapshot.val();
+    for(const item in goals) {
+        goal = item;
+        console.log(goal);
+        return;
+    }
+}
 
 let greenDates = [];
 
@@ -217,14 +234,12 @@ function Calendar(selector, options) {
             }
         }
     };
-
-    let goal = "asdf"
 // sets var greenDates to the days where goal was completed 
     const getDayStatuses = (userId) => {
         const goalsRef = firebase.database().ref(`users/${userId}/goals`);
         goalsRef.on('value', (snapshot) => {
             const data = snapshot.val();
-            console.log(data)
+            console.log("getDayStatuses", data)
             let dates = data[goal]["log"];
             for(const key in dates){
                 let date = new Date(data[goal]['log'][key].milliseconds)
@@ -236,7 +251,7 @@ function Calendar(selector, options) {
         
     };
 
-    getDayStatuses("some user key");
+    getDayStatuses(googleUserId);
 
     var calendar = new Calendar();
         
@@ -273,8 +288,7 @@ const checkboxClicked = () => {
     let ms = Date.parse(time);
     console.log(ms);
 
-    let userKey = 'some user key';
-    let goal = 'asdf';
+    let userKey = googleUserId;
 
     if (checkbox.checked === true) {
         firebase.database().ref(`users/${userKey}/goals/${goal}/log`).push({'milliseconds': ms});
