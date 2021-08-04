@@ -221,30 +221,33 @@ function Calendar(selector, options) {
             }
         }
     };
+
+    let goal = "asdf"
+// sets var greenDates to the days where goal was completed 
+    const getDayStatuses = (userId) => {
+        const goalsRef = firebase.database().ref(`users/${userId}/goals`);
+        goalsRef.on('value', (snapshot) => {
+            const data = snapshot.val();
+            console.log(data)
+            let dates = data[goal]["log"];
+            for(const key in dates){
+                let date = new Date(data[goal]['log'][key].milliseconds)
+                greenDates.push(date);
+            }
+            console.log(greenDates)
+            Calendar.prototype.drawDays();
+        });
+        
+    };
+
+    getDayStatuses("some user key");
+
     var calendar = new Calendar();
         
 }, false);
 
 })(jQuery);
 
-let goal = "asdf"
-// sets var greenDates to the days where goal was completed 
-const getDayStatuses = (userId) => {
-    const goalsRef = firebase.database().ref(`users/${userId}/goals`);
-    goalsRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        console.log(data)
-        dates = data[goal]["log"];
-        for(const key in dates){
-            date = new Date(data[goal]['log'][key].milliseconds)
-            greenDates.push(date);
-        }
-        console.log(greenDates)
-    });
-    
-};
-
-getDayStatuses("some user key");
 
 //functions for reading from database
 const readGoals = () => {
