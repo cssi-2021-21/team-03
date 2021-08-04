@@ -93,6 +93,14 @@ const addGoal = async (userId, newGoal) => {
     // check if goal with matching name already exists in database
     let goalId = await searchGoalsByName(newGoal.goalName);
 
+    // if match exists, check if user already has goal
+    if(goalId) {
+        const result = await searchGoalsInUser(userId, goalId);
+        if(result) {
+            return;
+        }
+    }
+
     // if no match exists, push new goal to database
     if(!goalId) {
         goalId = firebase.database().ref(`goals`).push(newGoal).getKey();
@@ -108,6 +116,18 @@ const addGoal = async (userId, newGoal) => {
     }
     firebase.database().ref(`users/${userId}/goals`).push(userGoal);
 }
+
+const searchGoalsInUser = async (userId, goalId) => {
+    const snapshot = await firebase.database().ref(`users/${userId}/goals`).once('value');
+    const goals = snapshot.val();
+    for(const goal in goals) {
+        if(goals[goal].id == goalId) {
+            return goal;
+        }
+    }
+    return 0;
+}
+
 const searchGoalsByName = async (goalName) => {
     const goalsRef = firebase.database().ref(`goals`);
     const snapshot = await goalsRef.once('value');
