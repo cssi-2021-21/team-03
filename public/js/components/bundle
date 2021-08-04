@@ -40130,7 +40130,6 @@ const addGoal = async (userId, newGoal) => {
     const result = await searchGoalsInUser(userId, goalId);
 
     if (result) {
-      alert("already has goal");
       return;
     }
   } // if no match exists, push new goal to database
@@ -40189,6 +40188,21 @@ const deleteGoal = async (userId, goalId) => {
       return;
     }
   }
+}; // Create notif
+
+
+const createNotif = content => {
+  ReactDOM.render( /*#__PURE__*/React.createElement("div", {
+    class: "notification is-info is-light"
+  }, /*#__PURE__*/React.createElement("button", {
+    class: "delete"
+  }), content), document.querySelector("#notif_container"));
+  (document.querySelectorAll('.notification .delete') || []).forEach($delete => {
+    const $notification = $delete.parentNode;
+    $delete.addEventListener('click', () => {
+      $notification.parentNode.removeChild($notification);
+    });
+  });
 }; // Info for home icon
 
 
@@ -40233,13 +40247,12 @@ const pathVariants = {
   }
 }; // Render home icon
 
-ReactDOM.render( /*#__PURE__*/React.createElement("a", {
-  href: "index.html"
+ReactDOM.render( /*#__PURE__*/React.createElement("div", {
+  class: "navbar-brand"
+}, /*#__PURE__*/React.createElement("a", {
+  href: "index.html",
+  class: "navbar-item"
 }, /*#__PURE__*/React.createElement(motion.div, {
-  animate: {
-    x: 50,
-    y: 15
-  },
   whileHover: {
     fill: "#39cb75",
     originX: 0
@@ -40258,7 +40271,7 @@ ReactDOM.render( /*#__PURE__*/React.createElement("a", {
   variants: pathVariants,
   id: "tasks-icon",
   d: checkDoubleSVG
-})))), document.querySelector('#animated_stuff_container')); // Render user progress
+}))))), document.querySelector('#animated_stuff_container')); // Render user progress
 // TODO: update user key after we add authentication
 
 getGoals("some user key"); // Render the New Goals form

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="has-navbar-fixed-top">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,9 +23,12 @@
         <script src="https://cdn.jsdelivr.net/npm/chart.js@3.5.0/dist/chart.min.js"></script>
     </head>
     <body>
-        <div id="animated_stuff_container"></div>
-        <div id="insert_goal_container"></div>
-        <div id="historyLog"></div>
+        <div id="animated_stuff_container" class="navbar is-fixed-top"></div>
+        <div class="section">
+            <div id="insert_goal_container"></div>
+            <div id="notif_container" class="container"></div>
+            <div id="historyLog"></div>
+        </div>
         <script src="js/components/bundle"></script>
     </body>
 </html>
