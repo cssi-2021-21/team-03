@@ -1,22 +1,16 @@
 console.log("main")
+
+let goal = "";
+var currentGoalId = "";
+let greenDates = [];
+let calendar;
+let googleUserId = "";
+
 window.onload = (event) => {
     console.log("onload")
     // Use this to retain user state between html pages.
-    firebase.auth().onAuthStateChanged(function (user) {
-        console.log("check state")
-        if (user) {
-            console.log('Logged in as: ' + user.displayName);
-            googleUserId = user.uid;
-        } else {
-            console.log("not logged in")
-            // If not logged in, navigate back to login page.
-            window.location = 'signIn.html';
-        };
-    });
-  };
 
-let greenDates = [];
-let calendar;
+  };
 
 (function($) {
 	"use strict";
@@ -63,7 +57,7 @@ function Calendar(selector, options) {
         e?headDay[0].innerHTML = e : headDay[0].innerHTML = day;
         headMonth[0].innerHTML = monthTag[month] +" - " + year;
         
-        readGoals();
+        readGoals(currentGoalId);
 
         checkbox.checked = false;
         for (const date in greenDates) {
@@ -135,9 +129,7 @@ function Calendar(selector, options) {
     Calendar.prototype.clickDay = function(o) {
         var selected = document.getElementsByClassName("selected"),
             len = selected.length;
-        console.log("to be stripped of class", selected)
         if(len !== 0){
-            console.log("look at classes", selected[0].classList)
             selected[0].classList.remove("selected");
         }
         //console.log(o);
@@ -217,25 +209,74 @@ function Calendar(selector, options) {
         }
     };
 
-    let goal = "asdf"
 // sets var greenDates to the days where goal was completed 
     const getDayStatuses = (userId) => {
+        console.log("get day statuses", currentGoalId)
         const goalsRef = firebase.database().ref(`users/${userId}/goals`);
         goalsRef.on('value', (snapshot) => {
             const data = snapshot.val();
-            //console.log(data)
-            let dates = data[goal]["log"];
-            for(const key in dates){
-                let date = new Date(data[goal]['log'][key].milliseconds)
-                greenDates.push(date);
+            if(currentGoalId){
+                console.log("data in getstatus", data)
+                let dates = data[currentGoalId]['log'];
+                for(const key in dates){
+                    console.log(key)
+                    if (key === 0){
+             
+                    }
+                    else{
+                        let date = new Date(data[currentGoalId]['log'][key].milliseconds)
+                        greenDates.push(date);
+                    }
+                }
+                console.log(greenDates);
+                readGoals(currentGoalId);
+                Calendar.prototype.drawDays();
             }
-            console.log(greenDates);
-
-            Calendar.prototype.drawDays();
         });
     };
 
-    getDayStatuses("some user key");
+    //functions for reading from database
+    const readGoals = (goalId) => {
+        if(goalId === ""){
+            document.querySelector('#goal').innerHTML = "Set a goal";
+            return;
+        }
+        else{
+            const keyVal = goalId;
+            const goalsRef = firebase.database().ref(`goals/${keyVal}`);
+            goalsRef.on('value', (snapshot) => {
+                const data = snapshot.val();
+                document.querySelector('#goal').innerHTML = "Goal: " + data.goalName;
+                document.querySelector('#goalDescription').innerHTML = "Description: " + data.description;
+
+
+            });
+        }
+
+    };
+
+    firebase.auth().onAuthStateChanged(function (user) {
+        console.log("check state")
+        if (user) {
+            console.log('Logged in as: ' + user.displayName);
+            googleUserId = user.uid;
+            //console.log("google user", googleUserId)
+            const goalKeyRef = firebase.database().ref(`users/${googleUserId}/currentGoalkey`);
+            goalKeyRef.on("value", (snapshot)=> {
+                const data = snapshot.val();
+                currentGoalId = data;
+                console.log("current", data)
+                readGoals(currentGoalId);
+                getDayStatuses(googleUserId);
+            })
+        } else {
+            console.log("not logged in")
+            // If not logged in, navigate back to login page.
+            window.location = 'signIn.html';
+        };
+    });
+
+    
 
     calendar = new Calendar();
         
@@ -243,22 +284,8 @@ function Calendar(selector, options) {
 
 })(jQuery);
 
-
-//functions for reading from database
-const readGoals = () => {
-    const keyVal = 'goalkey1';
-    const goalsRef = firebase.database().ref(`goals/${keyVal}`);
-    goalsRef.on('value', (snapshot) => {
-        const data = snapshot.val();
-        
-        document.querySelector('#goal').innerHTML = "Goal: " + data.goalName;
-        document.querySelector('#goalDescription').innerHTML = "Description: " + data.description;
-
-        console.log(data.goalName);
-  });
-};
-
 const checkboxClicked = () => {
+    
     let checkbox = document.querySelector('#check');
     let headDay = document.getElementsByClassName('head-day'),
         headMonth = document.getElementsByClassName('head-month');
@@ -268,19 +295,17 @@ const checkboxClicked = () => {
     let yearStr = dateStr.substring(dateStr.lastIndexOf(' '));
 
     let time = new Date(monthStr + headDay[0].innerHTML + ',' + yearStr);
-    console.log(time);
+    //console.log(time);
     let ms = Date.parse(time);
-    console.log(ms);
+    //console.log(ms);
 
-    let userKey = 'some user key';
-    let goal = 'asdf';
-
-    //console.log(greenDates);
+    //console.log("greenDates", greenDates);
     if (checkbox.checked === true) {
-        firebase.database().ref(`users/${userKey}/goals/${goal}/log`).push({'milliseconds': ms});
+        firebase.database().ref(`users/${googleUserId}/goals/${currentGoalId}/log`).push({'milliseconds': ms});
+        
     }
     else {
-        let arr = firebase.database().ref(`users/${userKey}/goals/${goal}/log`);
+        let arr = firebase.database().ref(`users/${googleUserId}/goals/${goal}/log`);
         arr.on('value', (snapshot) => {
             const data = snapshot.val();
             for (const noteItem in data) {
@@ -297,23 +322,58 @@ const checkboxClicked = () => {
             }
         });  
     }
-    //console.log(greenDates);
-    calendar.drawDays();
+    
+    
+    
 }
 
 const setGoals = () => {
-    let userKey = "some user key"
+    console.log("google user id in set Goals", googleUserId)
     let goal = document.querySelector("#goalToSet").value;
     let description = document.querySelector("#goalDescription").value;
     console.log(goal, description)
-    firebase.database().ref(`users/${userKey}/goals`).push({
+    let goalId = firebase.database().ref(`users/${googleUserId}/goals`).push({
         "goalName": goal,
         "description":description,
         "bestStreak": 0,
         "currentStreak": 1,
         "doneToday":false,
-        "log": [],
+        "log": [0],
+    }).getKey()
+
+    firebase.database().ref(`goals`).child(goalId).set({
+        "goalName": goal,
+        "description":description
+    });
+    console.log("goalId",goalId)
+    firebase.database().ref(`users/${googleUserId}`).update({
+        "currentGoalkey": goalId
     })
-
-
 }
+
+// const getCurrentGoal = () => {
+//     console.log("Getter")
+//     let userKey = "some user key"
+//     let idPlaceholder;
+//     const goalKeyRef = firebase.database().ref(`users/${userKey}/currentGoalkey`);
+//     goalKeyRef.on("value", (snapshot)=> {
+//         const data = snapshot.val();
+//         idPlaceholder = data;
+//         console.log("current", idPlaceholder)
+//     })
+
+//     const goalRef = firebase.database().ref(`users/${userKey}/goals`);
+//     goalRef.on("value", (snapshot) => {
+//         const data = snapshot.val();
+//         console.log("Data", data[currentGoalId])
+//         goal = data[currentGoalId].goalName
+//         console.log(goal)
+//     })
+
+// }
+// console.log("outside", currentGoalId)
+
+
+
+
+
