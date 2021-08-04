@@ -8,18 +8,18 @@ const getGoals = (userId) => {
   const goalsRef = firebase.database().ref(`users/${userId}/goals`);
   goalsRef.on('value', (snapshot) => {
     const data = snapshot.val();
-    renderDataAsHtml(data);
+    renderDataAsHtml(userId, data);
   });
 };
 
-const renderDataAsHtml = (goalsData) => {
+const renderDataAsHtml = (userId, goalsData) => {
     document.querySelector("#historyLog").innerHTML=``;
     for (const goalItem in goalsData) {
         const goalId = goalsData[goalItem].id;
         const goalRef = firebase.database().ref(`goals/${goalId}`);
         goalRef.on('value', (snapshot) => {
             document.querySelector("#historyLog").insertAdjacentHTML("beforeend", `<div id=${goalId}></div>`);
-            ReactDOM.render(createCard(snapshot.val(), goalsData[goalItem]), document.querySelector(`#${goalId}`));
+            ReactDOM.render(createCard(userId, snapshot.val(), goalsData[goalItem]), document.querySelector(`#${goalId}`));
             
             // placeholder numbers for March-July for demo purposes, only August updates
             // used bestStreak to add variation to placeholder numbers....
@@ -47,7 +47,7 @@ const renderDataAsHtml = (goalsData) => {
                     label: 'Your Progress',
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
-                    data: data, // TODO: edit to reflect user data
+                    data: data,
                 }]
             };
             const config = {
@@ -61,7 +61,7 @@ const renderDataAsHtml = (goalsData) => {
     }
 }
 
-const createCard = (goalDetails, userDetails) => {
+const createCard = (userId, goalDetails, userDetails) => {
     const chartId = "chart"+userDetails.id;
   return (
     <div class="columns is-centered is-variable is-5">
@@ -91,7 +91,7 @@ const createCard = (goalDetails, userDetails) => {
           <p>Current Streak: {userDetails.currentStreak}</p>
         </div>
         <footer class="card-footer">
-            <button onClick={() => {deleteGoal("some user key", userDetails.id)} /*TODO: replace "some user key"*/} class="card-footer-item button">Delete goal</button>
+            <button onClick={() => {deleteGoal(userId, userDetails.id)} /*TODO: replace "some user key"*/} class="card-footer-item button">Delete goal</button>
         </footer>
       </div>
     </motion.div>
@@ -173,6 +173,7 @@ const createNotif = (content) => {
     Toastify({
         text: content,
         className: "info",
+        duration: 3500,
         close: true
     }).showToast();
 }
@@ -211,54 +212,70 @@ const pathVariants = {
   }
 }
 
-// Render home icon
-ReactDOM.render(<div class="navbar-brand">
-<a href="index.html" class="navbar-item">
-    <motion.div
-        whileHover={{fill: "#39cb75", originX: 0}}
-        onMouseOver={toFancy}
-        onMouseLeave={toSimple}>
-            <motion.svg 
-                initial="hidden"
-                animate="visible"
-                variants={svgVariants}
-                width="64" height="50" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-                <motion.path variants={pathVariants} id="tasks-icon" d={checkDoubleSVG}/>
-            </motion.svg>
-    </motion.div>
-</a></div>, document.querySelector('#animated_stuff_container'));
+const renderPage = (googleUserId) => {
+    // Render home icon
+    ReactDOM.render(<div class="navbar-brand">
+    <a href="index.html" class="navbar-item">
+        <motion.div
+            whileHover={{fill: "#39cb75", originX: 0}}
+            onMouseOver={toFancy}
+            onMouseLeave={toSimple}>
+                <motion.svg 
+                    initial="hidden"
+                    animate="visible"
+                    variants={svgVariants}
+                    width="64" height="50" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+                    <motion.path variants={pathVariants} id="tasks-icon" d={checkDoubleSVG}/>
+                </motion.svg>
+        </motion.div>
+    </a></div>, document.querySelector('#animated_stuff_container'));
 
+    // Render user progress
+    // TODO: update user key after we add authentication
+    getGoals(googleUserId);
 
-// Render user progress
-// TODO: update user key after we add authentication
-getGoals("some user key");
+    // Render the New Goals form
+    ReactDOM.render(<motion.div class="columns is-centered is-variable is-5"
+                                animate={{x:50, y:5}}>
+                    <div class="column is-half">
+                        <motion.div class="card"
+                                initial={{opacity:0.25}}
+                                whileHover={{opacity:1}}>
+                            <header class="card-header">
+                                <input id="newGoalName" class="input is-medium card-header-title" placeholder="New Goal"/>
+                            </header>
+                            <div class="card-content">
+                                <textarea id="newGoalDescription" class="textarea is-medium content" placeholder="Remember, keep it specific and bite-sized!"/>
+                            </div>
+                            <footer class="card-footer">
+                                <button id="createGoalButton" class="btn btn-primary">Submit</button>
+                            </footer>
+                        </motion.div>
+                    </div>
+                </motion.div>,  
+                document.querySelector("#insert_goal_container"));
 
-// Render the New Goals form
-ReactDOM.render(<motion.div class="columns is-centered is-variable is-5"
-                            animate={{x:50, y:5}}>
-                <div class="column is-half">
-                    <motion.div class="card"
-                            initial={{opacity:0.25}}
-                            whileHover={{opacity:1}}>
-                        <header class="card-header">
-                            <input id="newGoalName" class="input is-medium card-header-title" placeholder="New Goal"/>
-                        </header>
-                        <div class="card-content">
-                            <textarea id="newGoalDescription" class="textarea is-medium content" placeholder="Remember, keep it specific and bite-sized!"/>
-                        </div>
-                        <footer class="card-footer">
-                            <button id="createGoalButton" class="btn btn-primary">Submit</button>
-                        </footer>
-                    </motion.div>
-                </div>
-            </motion.div>,  
-            document.querySelector("#insert_goal_container"));
+    const nameInput = document.querySelector("#newGoalName");
+    const descriptionInput = document.querySelector("#newGoalDescription");
+    document.querySelector("#createGoalButton").addEventListener("click", () => {
+        const newGoal = {goalName: nameInput.value, description: descriptionInput.value};
+        nameInput.value = "";
+        descriptionInput.value = "";
+        addGoal(googleUserId, newGoal);
+    });
+}
 
-const nameInput = document.querySelector("#newGoalName");
-const descriptionInput = document.querySelector("#newGoalDescription");
-document.querySelector("#createGoalButton").addEventListener("click", () => {
-    const newGoal = {goalName: nameInput.value, description: descriptionInput.value};
-    nameInput.value = "";
-    descriptionInput.value = "";
-    addGoal("some user key", newGoal); // TODO: replace "some user key"
-});
+window.onload = (event) => {
+  // Use this to retain user state between html pages.
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+      console.log('Logged in as: ' + user.displayName);
+      let googleUserId = user.uid;
+      renderPage("some user key");
+      //renderPage(googleUserId);
+    } else {
+      // If not logged in, navigate back to login page.
+      window.location = 'index.html';
+    };
+  });
+};

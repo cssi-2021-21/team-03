@@ -40037,11 +40037,11 @@ const getGoals = userId => {
   const goalsRef = firebase.database().ref(`users/${userId}/goals`);
   goalsRef.on('value', snapshot => {
     const data = snapshot.val();
-    renderDataAsHtml(data);
+    renderDataAsHtml(userId, data);
   });
 };
 
-const renderDataAsHtml = goalsData => {
+const renderDataAsHtml = (userId, goalsData) => {
   document.querySelector("#historyLog").innerHTML = ``;
 
   for (const goalItem in goalsData) {
@@ -40049,7 +40049,7 @@ const renderDataAsHtml = goalsData => {
     const goalRef = firebase.database().ref(`goals/${goalId}`);
     goalRef.on('value', snapshot => {
       document.querySelector("#historyLog").insertAdjacentHTML("beforeend", `<div id=${goalId}></div>`);
-      ReactDOM.render(createCard(snapshot.val(), goalsData[goalItem]), document.querySelector(`#${goalId}`)); // placeholder numbers for March-July for demo purposes, only August updates
+      ReactDOM.render(createCard(userId, snapshot.val(), goalsData[goalItem]), document.querySelector(`#${goalId}`)); // placeholder numbers for March-July for demo purposes, only August updates
       // used bestStreak to add variation to placeholder numbers....
 
       let data = [0, 1, 6 + goalsData[goalItem].bestStreak, 0 + goalsData[goalItem].bestStreak, 2, 0];
@@ -40070,8 +40070,7 @@ const renderDataAsHtml = goalsData => {
           label: 'Your Progress',
           backgroundColor: 'rgb(255, 99, 132)',
           borderColor: 'rgb(255, 99, 132)',
-          data: data // TODO: edit to reflect user data
-
+          data: data
         }]
       };
       const config = {
@@ -40084,7 +40083,7 @@ const renderDataAsHtml = goalsData => {
   }
 };
 
-const createCard = (goalDetails, userDetails) => {
+const createCard = (userId, goalDetails, userDetails) => {
   const chartId = "chart" + userDetails.id;
   return /*#__PURE__*/React.createElement("div", {
     class: "columns is-centered is-variable is-5"
@@ -40126,7 +40125,7 @@ const createCard = (goalDetails, userDetails) => {
     class: "card-footer"
   }, /*#__PURE__*/React.createElement("button", {
     onClick: () => {
-      deleteGoal("some user key", userDetails.id);
+      deleteGoal(userId, userDetails.id);
     }
     /*TODO: replace "some user key"*/
     ,
@@ -40213,6 +40212,7 @@ const createNotif = content => {
   Toastify({
     text: content,
     className: "info",
+    duration: 3500,
     close: true
   }).showToast();
 }; // Info for home icon
@@ -40257,82 +40257,101 @@ const pathVariants = {
       ease: "easeInOut"
     }
   }
-}; // Render home icon
+};
 
-ReactDOM.render( /*#__PURE__*/React.createElement("div", {
-  class: "navbar-brand"
-}, /*#__PURE__*/React.createElement("a", {
-  href: "index.html",
-  class: "navbar-item"
-}, /*#__PURE__*/React.createElement(motion.div, {
-  whileHover: {
-    fill: "#39cb75",
-    originX: 0
-  },
-  onMouseOver: toFancy,
-  onMouseLeave: toSimple
-}, /*#__PURE__*/React.createElement(motion.svg, {
-  initial: "hidden",
-  animate: "visible",
-  variants: svgVariants,
-  width: "64",
-  height: "50",
-  viewBox: "0 0 512 512",
-  xmlns: "http://www.w3.org/2000/svg"
-}, /*#__PURE__*/React.createElement(motion.path, {
-  variants: pathVariants,
-  id: "tasks-icon",
-  d: checkDoubleSVG
-}))))), document.querySelector('#animated_stuff_container')); // Render user progress
-// TODO: update user key after we add authentication
+const renderPage = googleUserId => {
+  // Render home icon
+  ReactDOM.render( /*#__PURE__*/React.createElement("div", {
+    class: "navbar-brand"
+  }, /*#__PURE__*/React.createElement("a", {
+    href: "index.html",
+    class: "navbar-item"
+  }, /*#__PURE__*/React.createElement(motion.div, {
+    whileHover: {
+      fill: "#39cb75",
+      originX: 0
+    },
+    onMouseOver: toFancy,
+    onMouseLeave: toSimple
+  }, /*#__PURE__*/React.createElement(motion.svg, {
+    initial: "hidden",
+    animate: "visible",
+    variants: svgVariants,
+    width: "64",
+    height: "50",
+    viewBox: "0 0 512 512",
+    xmlns: "http://www.w3.org/2000/svg"
+  }, /*#__PURE__*/React.createElement(motion.path, {
+    variants: pathVariants,
+    id: "tasks-icon",
+    d: checkDoubleSVG
+  }))))), document.querySelector('#animated_stuff_container')); // Render user progress
+  // TODO: update user key after we add authentication
 
-getGoals("some user key"); // Render the New Goals form
+  getGoals(googleUserId); // Render the New Goals form
 
-ReactDOM.render( /*#__PURE__*/React.createElement(motion.div, {
-  class: "columns is-centered is-variable is-5",
-  animate: {
-    x: 50,
-    y: 5
-  }
-}, /*#__PURE__*/React.createElement("div", {
-  class: "column is-half"
-}, /*#__PURE__*/React.createElement(motion.div, {
-  class: "card",
-  initial: {
-    opacity: 0.25
-  },
-  whileHover: {
-    opacity: 1
-  }
-}, /*#__PURE__*/React.createElement("header", {
-  class: "card-header"
-}, /*#__PURE__*/React.createElement("input", {
-  id: "newGoalName",
-  class: "input is-medium card-header-title",
-  placeholder: "New Goal"
-})), /*#__PURE__*/React.createElement("div", {
-  class: "card-content"
-}, /*#__PURE__*/React.createElement("textarea", {
-  id: "newGoalDescription",
-  class: "textarea is-medium content",
-  placeholder: "Remember, keep it specific and bite-sized!"
-})), /*#__PURE__*/React.createElement("footer", {
-  class: "card-footer"
-}, /*#__PURE__*/React.createElement("button", {
-  id: "createGoalButton",
-  class: "btn btn-primary"
-}, "Submit"))))), document.querySelector("#insert_goal_container"));
-const nameInput = document.querySelector("#newGoalName");
-const descriptionInput = document.querySelector("#newGoalDescription");
-document.querySelector("#createGoalButton").addEventListener("click", () => {
-  const newGoal = {
-    goalName: nameInput.value,
-    description: descriptionInput.value
-  };
-  nameInput.value = "";
-  descriptionInput.value = "";
-  addGoal("some user key", newGoal); // TODO: replace "some user key"
-});
+  ReactDOM.render( /*#__PURE__*/React.createElement(motion.div, {
+    class: "columns is-centered is-variable is-5",
+    animate: {
+      x: 50,
+      y: 5
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    class: "column is-half"
+  }, /*#__PURE__*/React.createElement(motion.div, {
+    class: "card",
+    initial: {
+      opacity: 0.25
+    },
+    whileHover: {
+      opacity: 1
+    }
+  }, /*#__PURE__*/React.createElement("header", {
+    class: "card-header"
+  }, /*#__PURE__*/React.createElement("input", {
+    id: "newGoalName",
+    class: "input is-medium card-header-title",
+    placeholder: "New Goal"
+  })), /*#__PURE__*/React.createElement("div", {
+    class: "card-content"
+  }, /*#__PURE__*/React.createElement("textarea", {
+    id: "newGoalDescription",
+    class: "textarea is-medium content",
+    placeholder: "Remember, keep it specific and bite-sized!"
+  })), /*#__PURE__*/React.createElement("footer", {
+    class: "card-footer"
+  }, /*#__PURE__*/React.createElement("button", {
+    id: "createGoalButton",
+    class: "btn btn-primary"
+  }, "Submit"))))), document.querySelector("#insert_goal_container"));
+  const nameInput = document.querySelector("#newGoalName");
+  const descriptionInput = document.querySelector("#newGoalDescription");
+  document.querySelector("#createGoalButton").addEventListener("click", () => {
+    const newGoal = {
+      goalName: nameInput.value,
+      description: descriptionInput.value
+    };
+    nameInput.value = "";
+    descriptionInput.value = "";
+    addGoal(googleUserId, newGoal);
+  });
+};
+
+window.onload = event => {
+  // Use this to retain user state between html pages.
+  firebase.auth().onAuthStateChanged(function (user) {
+    if (user) {
+      console.log('Logged in as: ' + user.displayName);
+      let googleUserId = user.uid;
+      renderPage("some user key"); //renderPage(googleUserId);
+    } else {
+      // If not logged in, navigate back to login page.
+      window.location = 'index.html';
+    }
+
+    ;
+  });
+};
 
 },{"framer-motion":3,"react":13,"react-dom":10}],23:[function(require,module,exports){
 // shim for using process in browser
