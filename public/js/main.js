@@ -33,6 +33,7 @@ const initGoal = async () => {
 }
 
 let greenDates = [];
+let calendar;
 
 (function($) {
 	"use strict";
@@ -85,10 +86,8 @@ function Calendar(selector, options) {
         for (const date in greenDates) {
             //console.log(greenDates[date].toString() === selectedDay.toString())
             if (greenDates[date].toString() === selectedDay.toString()) {
-                console.log("box should be checked")
+                //console.log("box should be checked")
                 checkbox.checked = true;
-                break;
-                
             }
         }
      };
@@ -128,7 +127,7 @@ function Calendar(selector, options) {
             // loops through the days where goal was completed to set color to green
             greenDates.forEach(date => {
                 if(j=== date.getDate() + startDay -1 && month === date.getMonth() && year === date.getFullYear()){
-                    console.log(greenDates)
+                    //console.log(greenDates)
                     days[j].classList.add("selected-green");
                     //console.log("selected", date)
                 }
@@ -239,21 +238,21 @@ function Calendar(selector, options) {
         const goalsRef = firebase.database().ref(`users/${userId}/goals`);
         goalsRef.on('value', (snapshot) => {
             const data = snapshot.val();
-            console.log("getDayStatuses", data)
+            //console.log(data)
             let dates = data[goal]["log"];
             for(const key in dates){
                 let date = new Date(data[goal]['log'][key].milliseconds)
                 greenDates.push(date);
             }
-            console.log(greenDates)
+            console.log(greenDates);
+
             Calendar.prototype.drawDays();
         });
-        
     };
 
     getDayStatuses(googleUserId);
 
-    var calendar = new Calendar();
+    calendar = new Calendar();
         
 }, false);
 
@@ -290,7 +289,28 @@ const checkboxClicked = () => {
 
     let userKey = googleUserId;
 
+    //console.log(greenDates);
     if (checkbox.checked === true) {
         firebase.database().ref(`users/${userKey}/goals/${goal}/log`).push({'milliseconds': ms});
     }
+    else {
+        let arr = firebase.database().ref(`users/${userKey}/goals/${goal}/log`);
+        arr.on('value', (snapshot) => {
+            const data = snapshot.val();
+            for (const noteItem in data) {
+                const note = data[noteItem];
+                if(note.milliseconds === ms) {
+                    arr.child(noteItem).remove();
+
+                    for (let i in greenDates) {
+                        if (greenDates[i].getTime() === ms) {
+                            greenDates.splice(i, 1);
+                        }
+                    }
+                }
+            }
+        });  
+    }
+    //console.log(greenDates);
+    calendar.drawDays();
 }
