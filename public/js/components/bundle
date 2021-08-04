@@ -40118,14 +40118,23 @@ const createCard = (goalDetails, userDetails) => {
 }; // Helper functions for creating new goal
 
 
-const addGoal = async newGoal => {
+const addGoal = async (userId, newGoal) => {
   // check if goal with matching name already exists in database
   let goalId = await searchGoalsByName(newGoal.goalName); // if no match exists, push new goal to database
 
   if (!goalId) {
     goalId = firebase.database().ref(`goals`).push(newGoal).getKey();
-  }
+  } // wip
 
+
+  const userGoal = {
+    id: goalId,
+    bestStreak: 0,
+    currentStreak: 0,
+    doneToday: false,
+    log: []
+  };
+  firebase.database().ref(`users/${userId}/goals`).push(userGoal);
   console.log(goalId);
 };
 
@@ -40141,10 +40150,6 @@ const searchGoalsByName = async goalName => {
   }
 
   return 0;
-};
-
-const writeGoalToDatabase = () => {
-  alert("writing goal to database");
 }; // Info for home icon
 
 
@@ -40258,11 +40263,11 @@ const descriptionInput = document.querySelector("#newGoalDescription");
 document.querySelector("#createGoalButton").addEventListener("click", () => {
   const newGoal = {
     goalName: nameInput.value,
-    goalDescription: descriptionInput.value
+    description: descriptionInput.value
   };
   nameInput.value = "";
   descriptionInput.value = "";
-  addGoal(newGoal);
+  addGoal("some user key", newGoal);
 });
 
 },{"framer-motion":3,"react":13,"react-dom":10}],23:[function(require,module,exports){
