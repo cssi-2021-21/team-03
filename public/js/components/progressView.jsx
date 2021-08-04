@@ -20,14 +20,26 @@ const renderDataAsHtml = (goalsData) => {
         goalRef.on('value', (snapshot) => {
             document.querySelector("#historyLog").insertAdjacentHTML("beforeend", `<div id=${goalId}></div>`);
             ReactDOM.render(createCard(snapshot.val(), goalsData[goalItem]), document.querySelector(`#${goalId}`));
+            
+            // placeholder numbers for March-July for demo purposes, only August updates
+            // used bestStreak to add variation to placeholder numbers....
+            let data = [0, 1, 6+goalsData[goalItem].bestStreak, 0+goalsData[goalItem].bestStreak, 2, 0];
+            
+            const log = goalsData[goalItem].log;
+            for(const time in log) {
+                const date = new Date(log[time].milliseconds);
+                if(date.getMonth()-2 < data.length) {
+                    data[date.getMonth()-2]++;
+                }
+            }
 
             const labels = [
+                'March',
+                'April',
+                'May',
+                'June',
                 'July',
-                'August',
-                'September',
-                'October',
-                'November',
-                'December'
+                'August'
             ];
             const chartData = {
                 labels: labels,
@@ -35,7 +47,7 @@ const renderDataAsHtml = (goalsData) => {
                     label: 'Your Progress',
                     backgroundColor: 'rgb(255, 99, 132)',
                     borderColor: 'rgb(255, 99, 132)',
-                    data: [0, 10, 5, 2, 20, 30, 45], // TODO: edit to reflect user data
+                    data: data, // TODO: edit to reflect user data
                 }]
             };
             const config = {
@@ -97,8 +109,10 @@ const addGoal = async (userId, newGoal) => {
     if(goalId) {
         const result = await searchGoalsInUser(userId, goalId);
         if(result) {
+            createNotif(`You already have a goal called "${newGoal.goalName}"! If this is different from what you're going for, try giving your new goal a more specific title?`);
             return;
         }
+        createNotif(`A group of users have already created a public goal called "${newGoal.goalName}"! Please read over its description and see if it's close enough to your interests.`);
     }
 
     // if no match exists, push new goal to database
@@ -115,6 +129,7 @@ const addGoal = async (userId, newGoal) => {
         log: []
     }
     firebase.database().ref(`users/${userId}/goals`).push(userGoal);
+    createNotif(`${newGoal.goalName} added!`);
 }
 
 const searchGoalsInUser = async (userId, goalId) => {
@@ -147,6 +162,7 @@ const deleteGoal = async (userId, goalId) => {
     for(const goal in goals) {
         if(goals[goal].id == goalId) {
             firebase.database().ref(`users/${userId}/goals/${goal}`).remove();
+            createNotif("Goal deleted");
             return;
         }
     }
@@ -160,8 +176,6 @@ const createNotif = (content) => {
         close: true
     }).showToast();
 }
-
-createNotif("test");
 
 // Info for home icon
 const homeSVG = `M280.37 148.26L96 300.11V464a16 16 0 0 0 16 16l112.06-.29a16 16 0 0 0 15.92-16V368a16 16 0 0 1 16-16h64a16 16 0 0 1 16 16v95.64a16 16 0 0 0 16 16.05L464 480a16 16 0 0 0 16-16V300L295.67 148.26a12.19 12.19 0 0 0-15.3 0zM571.6 251.47L488 182.56V44.05a12 12 0 0 0-12-12h-56a12 12 0 0 0-12 12v72.61L318.47 43a48 48 0 0 0-61 0L4.34 251.47a12 12 0 0 0-1.6 16.9l25.5 31A12 12 0 0 0 45.15 301l235.22-193.74a12.19 12.19 0 0 1 15.3 0L530.9 301a12 12 0 0 0 16.9-1.6l25.5-31a12 12 0 0 0-1.7-16.93z`;
