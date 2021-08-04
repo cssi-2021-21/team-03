@@ -16,6 +16,7 @@ window.onload = (event) => {
   };
 
 let greenDates = [];
+let calendar;
 
 (function($) {
 	"use strict";
@@ -222,21 +223,21 @@ function Calendar(selector, options) {
         const goalsRef = firebase.database().ref(`users/${userId}/goals`);
         goalsRef.on('value', (snapshot) => {
             const data = snapshot.val();
-            console.log(data)
+            //console.log(data)
             let dates = data[goal]["log"];
             for(const key in dates){
                 let date = new Date(data[goal]['log'][key].milliseconds)
                 greenDates.push(date);
             }
-            console.log(greenDates)
+            console.log(greenDates);
+
             Calendar.prototype.drawDays();
         });
-        
     };
 
     getDayStatuses("some user key");
 
-    var calendar = new Calendar();
+    calendar = new Calendar();
         
 }, false);
 
@@ -274,6 +275,7 @@ const checkboxClicked = () => {
     let userKey = 'some user key';
     let goal = 'asdf';
 
+    //console.log(greenDates);
     if (checkbox.checked === true) {
         firebase.database().ref(`users/${userKey}/goals/${goal}/log`).push({'milliseconds': ms});
     }
@@ -285,9 +287,16 @@ const checkboxClicked = () => {
                 const note = data[noteItem];
                 if(note.milliseconds === ms) {
                     arr.child(noteItem).remove();
-                }    
+
+                    for (let i in greenDates) {
+                        if (greenDates[i].getTime() === ms) {
+                            greenDates.splice(i, 1);
+                        }
+                    }
+                }
             }
-        });
+        });  
     }
-    //this.drawDays();
+    //console.log(greenDates);
+    calendar.drawDays();
 }
