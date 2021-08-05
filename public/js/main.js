@@ -9,7 +9,6 @@ let googleUserId = "";
 window.onload = (event) => {
     console.log("onload")
     // Use this to retain user state between html pages.
-
   };
 
 (function($) {
@@ -232,6 +231,8 @@ function Calendar(selector, options) {
                 readGoals(currentGoalId);
                 Calendar.prototype.drawDays();
             }
+            //console.log(greenDates);
+            //Calendar.prototype.drawDays();
         });
     };
 
@@ -374,29 +375,14 @@ const searchByName = async (userId, goalName) => {
     return 0;
 }
 
-// const getCurrentGoal = () => {
-//     console.log("Getter")
-//     let userKey = "some user key"
-//     let idPlaceholder;
-//     const goalKeyRef = firebase.database().ref(`users/${userKey}/currentGoalkey`);
-//     goalKeyRef.on("value", (snapshot)=> {
-//         const data = snapshot.val();
-//         idPlaceholder = data;
-//         console.log("current", idPlaceholder)
-//     })
-
-//     const goalRef = firebase.database().ref(`users/${userKey}/goals`);
-//     goalRef.on("value", (snapshot) => {
-//         const data = snapshot.val();
-//         console.log("Data", data[currentGoalId])
-//         goal = data[currentGoalId].goalName
-//         console.log(goal)
-//     })
-
-// }
-// console.log("outside", currentGoalId)
-
-
-
-
-
+const affirmations = () => {
+    const urlToFetch = "https://api.allorigins.win/get?url=" + encodeURIComponent('https://www.affirmations.dev');
+        fetch(urlToFetch)
+        .then(response => response.json())
+        .then(myJson => {
+            console.log(myJson)
+        })
+        .catch(error => {
+            console.log("error:", error)
+        })
+}
