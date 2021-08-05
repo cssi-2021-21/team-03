@@ -8180,7 +8180,8 @@ h1, h2, h3, h4, h5,
   background-position: center center; }
 
 .elegant-calencar {
-  max-width: 700px;
+  max-width: 1200px;
+  max-height: 1000px;
   text-align: center;
   position: relative;
   margin: 0 auto;
@@ -8240,16 +8241,21 @@ h1, h2, h3, h4, h5,
 .calendar-wrap {
   width: 100%;
   background: #fff;
-  padding: 40px 20px 20px 20px; }
+  padding: 40px 20px 0px 20px; }
 
 #calendar {
   width: 100%; }
 
 #calendar tr {
-  height: 3em; }
+  height: 4em; }
 
 thead tr {
   color: #000;
+/*    
+  font-size: 30px;
+  font-size: 3.5vw;
+*/
+
   font-weight: 700; }
 
 tbody tr {
