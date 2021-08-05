@@ -13,6 +13,8 @@ window.onload = (event) => {
             window.location = 'signIn.html';
         };
     });
+    //api stuff
+    affirmations();
   };
 
 let greenDates = [];
@@ -229,7 +231,7 @@ function Calendar(selector, options) {
                 let date = new Date(data[goal]['log'][key].milliseconds)
                 greenDates.push(date);
             }
-            console.log(greenDates);
+            //console.log(greenDates);
 
             Calendar.prototype.drawDays();
         });
@@ -254,7 +256,7 @@ const readGoals = () => {
         document.querySelector('#goal').innerHTML = "Goal: " + data.goalName;
         document.querySelector('#goalDescription').innerHTML = "Description: " + data.description;
 
-        console.log(data.goalName);
+        //console.log(data.goalName);
   });
 };
 
@@ -299,4 +301,17 @@ const checkboxClicked = () => {
     }
     //console.log(greenDates);
     calendar.drawDays();
+}
+
+
+const affirmations = () => {
+    const urlToFetch = "https://api.allorigins.win/get?url=" + encodeURIComponent('https://www.affirmations.dev');
+        fetch(urlToFetch)
+        .then(response => response.json())
+        .then(myJson => {
+            console.log(myJson)
+        })
+        .catch(error => {
+            console.log("error:", error)
+        })
 }
