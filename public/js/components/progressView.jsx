@@ -21,19 +21,19 @@ const renderDataAsHtml = (userId, goalsData) => {
             document.querySelector("#historyLog").insertAdjacentHTML("beforeend", `<div id=${goalId}></div>`);
             ReactDOM.render(createCard(userId, snapshot.val(), goalsData[goalItem]), document.querySelector(`#${goalId}`));
             
-            // placeholder numbers for March-July for demo purposes, only August updates
-            // used bestStreak to add variation to placeholder numbers....
-            let data = [0, 1, 6+goalsData[goalItem].bestStreak, 0+goalsData[goalItem].bestStreak, 2, 0];
+            let data = [0, 0, 0, 0, 0, 0, 0, 0];
             
             const log = goalsData[goalItem].log;
             for(const time in log) {
                 const date = new Date(log[time].milliseconds);
-                if(date.getMonth()-2 < data.length) {
-                    data[date.getMonth()-2]++;
+                if(date.getMonth() < data.length) {
+                    data[date.getMonth()]++;
                 }
             }
 
             const labels = [
+                'January',
+                'February',
                 'March',
                 'April',
                 'May',
@@ -271,8 +271,8 @@ window.onload = (event) => {
     if (user) {
       console.log('Logged in as: ' + user.displayName);
       let googleUserId = user.uid;
-      renderPage("some user key");
-      //renderPage(googleUserId);
+      //renderPage("some user key");
+      renderPage(googleUserId);
     } else {
       // If not logged in, navigate back to login page.
       window.location = 'index.html';
