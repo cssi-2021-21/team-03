@@ -8,6 +8,7 @@ let googleUserId = "";
 
 window.onload = (event) => {
     console.log("onload")
+    affirmations();
     // Use this to retain user state between html pages.
   };
 
@@ -376,13 +377,19 @@ const searchByName = async (userId, goalName) => {
 }
 
 const affirmations = () => {
-    const urlToFetch = "https://api.allorigins.win/get?url=" + encodeURIComponent('https://www.affirmations.dev');
+    let affirmationText = "affirm";
+
+    let urlToFetch = "https://api.allorigins.win/get?url=" + encodeURIComponent('https://www.affirmations.dev');
         fetch(urlToFetch)
         .then(response => response.json())
         .then(myJson => {
-            console.log(myJson)
+            console.log(myJson);
+            affirmationText = String(myJson.contents);
+            affirmationText = affirmationText.substring(affirmationText.indexOf(':') + 1, affirmationText.indexOf('}'));
+            document.querySelector('#affirmationText').innerHTML = affirmationText;
         })
         .catch(error => {
-            console.log("error:", error)
+            console.log("error:", error);
         })
+    
 }
