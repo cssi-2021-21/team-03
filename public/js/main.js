@@ -239,6 +239,7 @@ function Calendar(selector, options) {
     const readGoals = (goalId) => {
         if(goalId === ""){
             document.querySelector('#goal').innerHTML = "Set a goal";
+            document.querySelector('#goalDescriptionCal').innerHTML = "It seems like you don't have any goals yet. Click the blue button!";
             return;
         }
         else{
@@ -247,7 +248,7 @@ function Calendar(selector, options) {
             goalsRef.on('value', (snapshot) => {
                 const data = snapshot.val();
                 document.querySelector('#goal').innerHTML = "Goal: " + data.goalName;
-                document.querySelector('#goalDescription').innerHTML = "Description: " + data.description;
+                document.querySelector('#goalDescriptionCal').innerHTML = "Description: " + data.description;
 
 
             });
@@ -285,6 +286,8 @@ function Calendar(selector, options) {
 })(jQuery);
 
 const checkboxClicked = () => {
+
+    if(currentGoalId == "") return;
     
     let checkbox = document.querySelector('#check');
     let headDay = document.getElementsByClassName('head-day'),
@@ -332,20 +335,22 @@ const setGoals = () => {
     let goal = document.querySelector("#goalToSet").value;
     let description = document.querySelector("#goalDescription").value;
     console.log(goal, description)
-    let goalId = firebase.database().ref(`users/${googleUserId}/goals`).push({
+    
+    const goalId = firebase.database().ref(`goals`).push({
+        "goalName": goal,
+        "description":description
+    }).getKey();
+    
+    firebase.database().ref(`users/${googleUserId}/goals`).child(goalId).update({
         "goalName": goal,
         "description":description,
         "bestStreak": 0,
         "currentStreak": 1,
         "doneToday":false,
         "log": [0],
-    }).getKey()
+        "id": goalId
+    })
 
-    firebase.database().ref(`goals`).child(goalId).set({
-        "goalName": goal,
-        "description":description
-    });
-    console.log("goalId",goalId)
     firebase.database().ref(`users/${googleUserId}`).update({
         "currentGoalkey": goalId
     })
