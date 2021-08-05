@@ -330,12 +330,21 @@ const checkboxClicked = () => {
     
 }
 
-const setGoals = () => {
-    console.log("google user id in set Goals", googleUserId)
+const setGoals = async () => {
     let goal = document.querySelector("#goalToSet").value;
     let description = document.querySelector("#goalDescription").value;
-    console.log(goal, description)
-    
+
+    // search user's goals for matching goal
+    const match = await searchByName(googleUserId, goal);
+    if(match) {
+        console.log("match found", match);
+        firebase.database().ref(`users/${googleUserId}`).update({
+            "currentGoalkey": match
+        })
+        return;
+    }
+
+    // if no match found, add new goal to database
     const goalId = firebase.database().ref(`goals`).push({
         "goalName": goal,
         "description":description
@@ -354,6 +363,15 @@ const setGoals = () => {
     firebase.database().ref(`users/${googleUserId}`).update({
         "currentGoalkey": goalId
     })
+}
+
+const searchByName = async (userId, goalName) => {
+    const snapshot = await firebase.database().ref(`users/${userId}/goals`).once('value');
+    const data = snapshot.val();
+    for(item in data) {
+        if(data[item].goalName.toLowerCase().replace(/\s/g, "") == goalName.toLowerCase().replace(/\s/g, "")) return item;
+    }
+    return 0;
 }
 
 // const getCurrentGoal = () => {

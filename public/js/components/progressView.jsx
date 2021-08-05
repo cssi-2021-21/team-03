@@ -112,13 +112,13 @@ const addGoal = async (userId, newGoal) => {
             createNotif(`You already have a goal called "${newGoal.goalName}"! If this is different from what you're going for, try giving your new goal a more specific title?`);
             return;
         }
-        createNotif(`A group of users have already created a public goal called "${newGoal.goalName}"! Please read over its description and see if it's close enough to your interests.`);
+        //createNotif(`A group of users have already created a public goal called "${newGoal.goalName}"! Please read over its description and see if it's close enough to your interests.`);
     }
 
     // if no match exists, push new goal to database
-    if(!goalId) {
+    //if(!goalId) {
         goalId = firebase.database().ref(`goals`).push(newGoal).getKey();
-    }
+    //}
 
     // add goal to user
     const userGoal = {
@@ -126,9 +126,11 @@ const addGoal = async (userId, newGoal) => {
         bestStreak: 0,
         currentStreak: 0,
         doneToday: false,
+        goalName: newGoal.goalName,
+        description: newGoal.description,
         log: []
     }
-    firebase.database().ref(`users/${userId}/goals`).push(userGoal);
+    firebase.database().ref(`users/${userId}/goals`).child(goalId).update(userGoal);
     createNotif(`${newGoal.goalName} added!`);
 }
 
@@ -162,6 +164,7 @@ const deleteGoal = async (userId, goalId) => {
     for(const goal in goals) {
         if(goals[goal].id == goalId) {
             firebase.database().ref(`users/${userId}/goals/${goal}`).remove();
+            firebase.database().ref(`goals/${goal}`).remove();
             createNotif("Goal deleted");
             return;
         }
