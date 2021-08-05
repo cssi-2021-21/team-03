@@ -3,16 +3,9 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Habit Tracker</title>
+        <title>Habit Tracker: Get Started</title>
         <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600&display=swap" rel="stylesheet">
-        <!--<link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />-->
-        <link rel="stylesheet" type="text/css" href="css/style.css">
-        <link rel="stylesheet" type="text/css" href="css/checkbox.css">
-        <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700&display=swap" rel="stylesheet">
-
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
-
-        
+        <link rel="stylesheet" href="https://unpkg.com/bulma@0.9.0/css/bulma.min.css" />
 
         <!-- update the version number as needed -->
         <script src="/__/firebase/8.8.1/firebase-app.js"></script>
@@ -20,7 +13,7 @@
         
         <!-- include only the Firebase features as you need -->
         <script src="/__/firebase/8.8.1/firebase-database.js"></script>
-
+        
         <!-- 
         initialize the SDK after all desired features are loaded, set useEmulator to false
         to avoid connecting the SDK to running emulators.
@@ -28,175 +21,25 @@
         <script src="/__/firebase/init.js?useEmulator=true"></script>
         <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
         <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
-        
-        
-                                            
     </head>
     <body>
-
-      
-      <section class="ftco-section">
-        <div class="container">
-          <div class="row justify-content-center">
-            <div class="col-md-6 text-center mb-5">
-              <h2 class="heading-section">Habit Tracker</h2>
-            </div>
-          </div>
-
-          <!-- Modal -->
-          <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Create a new goal</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                  <span aria-hidden="true">&times;</span>
-                  </button>
+        <div class="content">
+            <section class="hero is-default is-bold is-light">
+                <div class="hero-body">
+                        <div class="container has-text-centered">
+                            <h1>Welcome to Habit Tracker!</h1>
+                        </div>
                 </div>
-                <div class="modal-body">
-                  <form>
-                    <div class="form-group">
-                      <h5>Goal</h5>
-                      <input type="text" class="form-control" id="goalToSet" aria-describedby="emailHelp" placeholder="New Goal">
-                      <small id="goalCaption" class="form-text text-muted">Input a new goal! Or the name of an existing goal to view it on the calendar. (can keep description blank)</small>
-                    </div>
-                    <div class="form-group">
-                      <h5>Description</h5>
-                      <textarea class="form-control" id="goalDescription" rows="3" placeholder="Remember, keep it specific and bite-sized!"></textarea>
-                    </div>
-                  </form>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary" onclick="setGoals()">Save changes</button>
-                </div>
-              </div>
-            </div>
-          </div>     
-          <div class="row justify-content-md-center">
-                <!-- Button trigger modal -->
-                <div class="col-lg-2 nav-item">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                        Set Goal
-                    </button>
-                </div>
-                <div class="col-lg-2 nav-item">
-                    <a href="/progress.html" class="btn btn-primary">View progress</a>
-                </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <div class="elegant-calencar d-md-flex">
-                <div class="wrap-header d-flex align-items-center">
-                  <!--<p id="reset">reset</p>-->
-                  <div id="header" class="p-0">
-                    <div class="pre-button d-flex align-items-center justify-content-center"><i class="fa fa-chevron-left"></i></div>
-                      <div class="head-info card-title">
-                        <div class="head-day"></div>
-                        <div class="head-month"></div>
-                      </div>
-                        <div class="card-body">
-                          <h5 class="card-title" id="goal">Goal: </h5>
-
-                            <div class="checkbox">
-                              <form>
-                                <div>
-                                  <input type="checkbox" id="check" name="check" value="" onchange="checkboxClicked()"/>
-                                  <label for="check">
-                                    <span><!-- This span is needed to create the "checkbox" element --></span>ACHIEVED
-                                  </label>
-                                </div>
-                              </form>
-                            </div>
-
-                              <p class="card-text" id="goalDescriptionCal">It seems like you haven't set any goals yet. Click the blue button to get started!</p>
-                          </div>
-                          <div class="next-button d-flex align-items-center justify-content-center"><i class="fa fa-chevron-right"></i></div>
-                    </div>
-                </div>
-                      <div class="calendar-wrap">
-                        <table id="calendar">
-                        <thead>
-                            <tr>
-                                <th>Sun</th>
-                                <th>Mon</th>
-                                <th>Tue</th>
-                                <th>Wed</th>
-                                <th>Thu</th>
-                                <th>Fri</th>
-                                <th>Sat</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        <tr>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                          <td></td>
-                        </tr>
-                        </tbody>
-                        </table>
-                      </div>
-                    </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-
-
-      <script src="js/jquery.min.js"></script>
-      <script src="js/popper.js"></script>
-      <script src="js/bootstrap.min.js"></script>
-      <script src="js/main.js"></script>
-
+                
+            </section>
+            <p class="has-text-centered">
+                <button class="button is-medium is-info is-outlined" onclick="signIn()">
+                    Sign In
+                </button>
+            </p>
+            
+        </div>
+        
+        <script type="text/javascript" src="js/signIn.js"></script>
     </body>
 </html>

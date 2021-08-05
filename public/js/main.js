@@ -8,8 +8,8 @@ let googleUserId = "";
 
 window.onload = (event) => {
     console.log("onload")
+    affirmations();
     // Use this to retain user state between html pages.
-
   };
 
 (function($) {
@@ -237,6 +237,8 @@ function Calendar(selector, options) {
                 readGoals(currentGoalId);
                 Calendar.prototype.drawDays();
             }
+            //console.log(greenDates);
+            //Calendar.prototype.drawDays();
         });
     };
 
@@ -276,7 +278,7 @@ function Calendar(selector, options) {
         } else {
             console.log("not logged in")
             // If not logged in, navigate back to login page.
-            window.location = 'signIn.html';
+            window.location = 'index.html';
         };
     });
 
@@ -383,29 +385,20 @@ const searchByName = async (userId, goalName) => {
     return 0;
 }
 
-// const getCurrentGoal = () => {
-//     console.log("Getter")
-//     let userKey = "some user key"
-//     let idPlaceholder;
-//     const goalKeyRef = firebase.database().ref(`users/${userKey}/currentGoalkey`);
-//     goalKeyRef.on("value", (snapshot)=> {
-//         const data = snapshot.val();
-//         idPlaceholder = data;
-//         console.log("current", idPlaceholder)
-//     })
+const affirmations = () => {
+    let affirmationText = "affirm";
 
-//     const goalRef = firebase.database().ref(`users/${userKey}/goals`);
-//     goalRef.on("value", (snapshot) => {
-//         const data = snapshot.val();
-//         console.log("Data", data[currentGoalId])
-//         goal = data[currentGoalId].goalName
-//         console.log(goal)
-//     })
-
-// }
-// console.log("outside", currentGoalId)
-
-
-
-
-
+    let urlToFetch = "https://api.allorigins.win/get?url=" + encodeURIComponent('https://www.affirmations.dev');
+        fetch(urlToFetch)
+        .then(response => response.json())
+        .then(myJson => {
+            console.log(myJson);
+            affirmationText = String(myJson.contents);
+            affirmationText = affirmationText.substring(affirmationText.indexOf(':') + 1, affirmationText.indexOf('}'));
+            document.querySelector('#affirmationText').innerHTML = affirmationText;
+        })
+        .catch(error => {
+            console.log("error:", error);
+        })
+    
+}
