@@ -83,15 +83,26 @@
               </div>
             </div>
           </div>     
-          <div class="row justify-content-md-center">
+          <div class="row justify-content-center">
                 <!-- Button trigger modal -->
-                <div class="col-lg-2 nav-item">
+                <div class="col-lg-3">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
                         Set Goal
                     </button>
                 </div>
-                <div class="col-lg-2 nav-item">
+                <!--progress page button-->
+                <div class="col-lg-3">
                     <a href="/progress.html" class="btn btn-primary">View progress</a>
+                </div>
+                <!--log out button-->
+                <div class="col-lg-3">
+                    <button type="button" class="btn btn-primary" onclick="firebase.auth().signOut().then(() => {
+  // Sign-out successful.
+}).catch((error) => {
+  // An error happened.
+});">
+                        Log Out
+                    </button>
                 </div>
           </div>
           <div class="row">

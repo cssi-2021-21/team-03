@@ -218,7 +218,7 @@ const pathVariants = {
 const renderPage = (googleUserId) => {
     // Render home icon
     ReactDOM.render(<div class="navbar-brand">
-    <a href="index.html" class="navbar-item">
+    <a href="calendar.html" class="navbar-item">
         <motion.div
             whileHover={{fill: "#39cb75", originX: 0}}
             onMouseOver={toFancy}
