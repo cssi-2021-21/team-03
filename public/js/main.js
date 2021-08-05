@@ -400,5 +400,13 @@ const affirmations = () => {
         .catch(error => {
             console.log("error:", error);
         })
-    
+}
+
+const logOutClicked = () => {
+    firebase.auth().signOut().then(() => {
+        console.log("sign out successful");
+    }).catch((error) => {
+        console.log("log out error:", error);
+    });
+    window.location.href = "index.html";
 }
