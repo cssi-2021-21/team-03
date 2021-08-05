@@ -21,19 +21,19 @@ const renderDataAsHtml = (userId, goalsData) => {
             document.querySelector("#historyLog").insertAdjacentHTML("beforeend", `<div id=${goalId}></div>`);
             ReactDOM.render(createCard(userId, snapshot.val(), goalsData[goalItem]), document.querySelector(`#${goalId}`));
             
-            // placeholder numbers for March-July for demo purposes, only August updates
-            // used bestStreak to add variation to placeholder numbers....
-            let data = [0, 1, 6+goalsData[goalItem].bestStreak, 0+goalsData[goalItem].bestStreak, 2, 0];
+            let data = [0, 0, 0, 0, 0, 0, 0, 0];
             
             const log = goalsData[goalItem].log;
             for(const time in log) {
                 const date = new Date(log[time].milliseconds);
-                if(date.getMonth()-2 < data.length) {
-                    data[date.getMonth()-2]++;
+                if(date.getMonth() < data.length) {
+                    data[date.getMonth()]++;
                 }
             }
 
             const labels = [
+                'January',
+                'February',
                 'March',
                 'April',
                 'May',
@@ -112,13 +112,13 @@ const addGoal = async (userId, newGoal) => {
             createNotif(`You already have a goal called "${newGoal.goalName}"! If this is different from what you're going for, try giving your new goal a more specific title?`);
             return;
         }
-        createNotif(`A group of users have already created a public goal called "${newGoal.goalName}"! Please read over its description and see if it's close enough to your interests.`);
+        //createNotif(`A group of users have already created a public goal called "${newGoal.goalName}"! Please read over its description and see if it's close enough to your interests.`);
     }
 
     // if no match exists, push new goal to database
-    if(!goalId) {
+    //if(!goalId) {
         goalId = firebase.database().ref(`goals`).push(newGoal).getKey();
-    }
+    //}
 
     // add goal to user
     const userGoal = {
@@ -126,9 +126,11 @@ const addGoal = async (userId, newGoal) => {
         bestStreak: 0,
         currentStreak: 0,
         doneToday: false,
+        goalName: newGoal.goalName,
+        description: newGoal.description,
         log: []
     }
-    firebase.database().ref(`users/${userId}/goals`).push(userGoal);
+    firebase.database().ref(`users/${userId}/goals`).child(goalId).update(userGoal);
     createNotif(`${newGoal.goalName} added!`);
 }
 
@@ -162,6 +164,7 @@ const deleteGoal = async (userId, goalId) => {
     for(const goal in goals) {
         if(goals[goal].id == goalId) {
             firebase.database().ref(`users/${userId}/goals/${goal}`).remove();
+            firebase.database().ref(`goals/${goal}`).remove();
             createNotif("Goal deleted");
             return;
         }
@@ -271,8 +274,8 @@ window.onload = (event) => {
     if (user) {
       console.log('Logged in as: ' + user.displayName);
       let googleUserId = user.uid;
-      renderPage("some user key");
-      //renderPage(googleUserId);
+      //renderPage("some user key");
+      renderPage(googleUserId);
     } else {
       // If not logged in, navigate back to login page.
       window.location = 'index.html';
