@@ -12,7 +12,7 @@ const signIn = () => {
         var token = credential.accessToken;
 
         var user = result.user;
-        window.location = 'index.html';
+        window.location = 'calendar.html';
     }).catch((error) => {
         var errorCode = error.code;
         var errorMessage = error.message;

@@ -275,7 +275,7 @@ function Calendar(selector, options) {
         } else {
             console.log("not logged in")
             // If not logged in, navigate back to login page.
-            window.location = 'signIn.html';
+            window.location = 'index.html';
         };
     });
 
