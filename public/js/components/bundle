@@ -40263,7 +40263,7 @@ const renderPage = googleUserId => {
   ReactDOM.render( /*#__PURE__*/React.createElement("div", {
     class: "navbar-brand"
   }, /*#__PURE__*/React.createElement("a", {
-    href: "index.html",
+    href: "calendar.html",
     class: "navbar-item"
   }, /*#__PURE__*/React.createElement(motion.div, {
     whileHover: {

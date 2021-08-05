@@ -101,6 +101,8 @@ function Calendar(selector, options) {
                     days[j].id = "today";
                 } 
             }
+            days[j].classList.remove("selected-green");
+            
             // loops through the days where goal was completed to set color to green
             greenDates.forEach(date => {
                 if(j=== date.getDate() + startDay -1 && month === date.getMonth() && year === date.getFullYear()){
@@ -212,6 +214,9 @@ function Calendar(selector, options) {
 // sets var greenDates to the days where goal was completed 
     const getDayStatuses = (userId) => {
         console.log("get day statuses", currentGoalId)
+        while(greenDates.length) {
+            greenDates.pop();
+        }
         const goalsRef = firebase.database().ref(`users/${userId}/goals`);
         goalsRef.on('value', (snapshot) => {
             const data = snapshot.val();
@@ -221,7 +226,7 @@ function Calendar(selector, options) {
                 for(const key in dates){
                     console.log(key)
                     if (key === 0){
-             
+
                     }
                     else{
                         let date = new Date(data[currentGoalId]['log'][key].milliseconds)
@@ -251,8 +256,6 @@ function Calendar(selector, options) {
                 const data = snapshot.val();
                 document.querySelector('#goal').innerHTML = "Goal: " + data.goalName;
                 document.querySelector('#goalDescriptionCal').innerHTML = "Description: " + data.description;
-
-
             });
         }
 
@@ -342,7 +345,13 @@ const setGoals = async () => {
         console.log("match found", match);
         firebase.database().ref(`users/${googleUserId}`).update({
             "currentGoalkey": match
-        })
+        });
+        
+        // reset greenDates
+        while(greenDates.length) {
+            greenDates.pop();
+        }
+        
         return;
     }
 
